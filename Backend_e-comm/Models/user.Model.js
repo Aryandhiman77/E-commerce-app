@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema ({
     },
     role_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'userRoles'
+        ref:'userRole'
     },
     email:{
         type:String,
@@ -25,9 +25,12 @@ const userSchema = new mongoose.Schema ({
     status:{
         type:String,
         enum:['active','inactive','block'],
-        required:true
+        default:'inactive'
     },
-    profile:String,
+    profile:{
+        type:String,
+        default:'/defaultProfile/profile.jpg'
+    }
 })
 
 const User = mongoose.model('user',userSchema)

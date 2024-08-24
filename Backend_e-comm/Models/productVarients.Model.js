@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const productSchema = new mongoose.Schema ({
+const productVarientSchema = new mongoose.Schema ({
     product_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'product'
@@ -18,5 +18,5 @@ const productSchema = new mongoose.Schema ({
     }
 })
 
-const Product = mongoose.model('product',productSchema)
+const ProductVarient = mongoose.model('productVarient',productVarientSchema)
 module.exports = Product

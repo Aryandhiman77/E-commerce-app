@@ -4,6 +4,10 @@ const productSchema = new mongoose.Schema ({
         type:String,
         required:true
     },
+    product_image:{
+        type:String,
+        required:true
+    },
     url_slug:{
         type: String,
         unique:true,
