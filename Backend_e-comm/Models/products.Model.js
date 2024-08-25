@@ -4,14 +4,11 @@ const productSchema = new mongoose.Schema ({
         type:String,
         required:true
     },
-    product_image:{
-        type:String,
-        required:true
-    },
-    url_slug:{
+    product_images:[],
+    product_url_slug:{
         type: String,
         unique:true,
-        required:true
+        sparse:true
     },
     category_id:{
         type:mongoose.Schema.Types.ObjectId,
@@ -19,14 +16,23 @@ const productSchema = new mongoose.Schema ({
     },
     description:{
         type:String,
-        required:true,
+        required:true,  
     },
-    status:{
+    price:{
+        type:Number,
+        required:true,
+        set: (v) => {
+            return Math.round(v * 100) / 100; //! rounding off the value*100 and dividing by 100 to get 2 decimal places
+        }
+    },
+    stock_quantity:{
+        type:Number
+    },
+    product_status:{
         type:String,
         enum:['active','inactive'],
-        required:true,
+        default:'active'
     }
 })
-
 const Product = mongoose.model('product',productSchema)
 module.exports = Product

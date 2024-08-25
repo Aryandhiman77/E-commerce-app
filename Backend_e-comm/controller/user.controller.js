@@ -11,7 +11,7 @@ const register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // return must be written to take control out the function otherwise the code outside this function will execute
-    return res.json({ errors: errors.array() });
+    return res.json({ errors: errors.array()[0].msg });
   }
   try {
     const { role_name, password } = req.body;
@@ -46,9 +46,9 @@ const register = async (req, res) => {
     const user = await User.create(saveObj);
     if(user){
         const payload = {
-            _id:user._id
+            id:user.id
         }
-        // ! Generating JWT
+        // ! ! Generating JWT for successfull registration
         jwt.sign(payload,jwtSecret,{expiresIn:'2h'},((err,token)=>{
             res.status(200).json({success:true, message: "Registration successfull.",token})
         }))
@@ -66,23 +66,32 @@ const login = async (req, res) => {
     return res.json({ errors: errors.array() });
   }
   try {
-    const { email, password } = req.body;
+    const { email, password,token } = req.body;
     const user = await User.findOne({ email },{status:0});
     if (!user) {
       return res.status(401).json({success:false,message: "User does not exists." });
     } else {
-        //* Verifying encrypted password
+        //* Verifying encrypted password and sending token 
       const checkpass = await bcrypt.compare(password, user.password);  
       await User.findByIdAndUpdate(user._id,{$set:{status:'active'}})
        if(checkpass){
-        res.status(200).json({success:true, message: "Login successfull.",user})
+        const payload = {
+          id:user.id
+        }
+        // ! Generating JWT for successfull login
+        jwt.sign(payload,jwtSecret,{expiresIn:'2h'},((err,token)=>{
+          res.status(200).json({success:true, message: "Login successfull.",token})
+      }))
        }else{
-        res.status(401).json({success:false, message: "Invalid password."});
+        res.status(401).json({success:false, error: "Invalid password."});
        } 
        //* ---------------x---------------
     }
   } catch (error) {
-    res.status(500).json({success:false,error: "Internal server error.", message: error.message });
+    error.message===""&& res.status(500).json({success:false,error: "Internal server error."})
+        res.status(500).json({success:false, error: error.message });
   }
 };
+
+
 module.exports = { register, login };

@@ -2,9 +2,11 @@ const express = require('express')
 const router = express.Router();
 const {register, login} = require('../controller/user.controller');
 const { validateRegistration,validateLogin } = require('../validations/users.validator');
-const loginMiddleware = require('../middleware/login.middleware')
+// const loginMiddleware = require('../middleware/login.middleware')    
+// ! Registeration form validation ,Register and provide JWT
+router.post('/register',validateRegistration,register)  
 
-router.post('/register',validateRegistration,register)  // ! Basic registeration form validation and register
-router.post('/login',validateLogin,loginMiddleware,login)  // ! Basic login form validation and checking login through JWT
+// ! login form validation and providing JWT
+router.post('/login',validateLogin,login)  
 
 module.exports = router

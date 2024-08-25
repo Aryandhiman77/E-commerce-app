@@ -2,20 +2,21 @@ const mongoose = require('mongoose')
 const categorySchema = new mongoose.Schema ({
     category_name:{
         type:String,
-        required:true
-    },
-    url_slug:{
-        type: String,
         unique:true,
         required:true
     },
-    parent_cat_id:{
-        type:String,
+    category_url_slug:{
+        type: String,
+        unique:true,
+        // required:true
     },
-    status:{
+    parent_cat_id:{
+        type:String,    //todo
+    },
+    cat_status:{
         type:String,
         enum:['active','inactive','block'],
-        required:true
+        default:'active'
     }
 })
 

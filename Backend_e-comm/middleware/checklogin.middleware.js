@@ -1,15 +1,18 @@
 const jwt = require('jsonwebtoken')
 const jwtSecret = process.env.JWT_PRIVATE_KEY
-
-const loginMiddleware = (req,res,next)=>{
+const User = require('../Models/user.Model')
+const checkLoginMiddleware = (req,res,next)=>{
     try{
         let token = req.headers.authorization;
+        !token && res.send({message:'Please provide a valid authorization token.'})
         token = token.split(' ')[1];
-        jwt.verify(token,jwtSecret,(err,data)=>{
+        jwt.verify(token,jwtSecret,async(err,data)=>{
             if(err){
                 return res.send({message:'Please provide a valid authorization token.'})
             }
-            req.body={...req.body,token}
+            const user = await User.findById(data.id)
+            req.user = user._id.toString()
+            req.token = token
             next();
         })
 
@@ -19,4 +22,4 @@ const loginMiddleware = (req,res,next)=>{
     
     
 }
-module.exports = loginMiddleware
+module.exports = checkLoginMiddleware
