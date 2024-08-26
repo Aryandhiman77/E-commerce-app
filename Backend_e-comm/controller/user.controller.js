@@ -79,7 +79,7 @@ const login = async (req, res) => {
           id:user.id
         }
         // ! Generating JWT for successfull login
-        jwt.sign(payload,jwtSecret,{expiresIn:'2h'},((err,token)=>{
+        jwt.sign(payload,jwtSecret,{expiresIn:'10h'},((err,token)=>{
           res.status(200).json({success:true, message: "Login successfull.",token})
       }))
        }else{
