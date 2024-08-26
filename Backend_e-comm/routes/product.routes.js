@@ -2,17 +2,16 @@ const express = require("express");
 const router = express.Router();
 const checkLoginMiddleware = require("../middleware/checklogin.middleware");
 const { addProduct,updateProduct } = require("../controller/product.controller");
-const {validateProductImageAndUpload,validateProduct} = require("../validations/product.validation");
-const renameImages = require("../middleware/renameImages.middleware");
-
-// const multer = require("multer");
-// const { productValidation } = require("../validations/product.validation");
-
+const validateAddProduct = require("../validations/product.validation");
+const {handleSingleImageUpload} = require('../middleware/imageUpload.middleware')
+const {validationResult} = require('express-validator')
+const fs = require('fs')
 
 //? Add product route -> Upload Images and validate add product form 
-router.post("/product",checkLoginMiddleware,validateProduct,validateProductImageAndUpload,renameImages,addProduct);
+// router.post("/product",checkLoginMiddleware,validateFormData,addProduct);
+router.post("/product",checkLoginMiddleware,handleSingleImageUpload,validateAddProduct,addProduct);
 
 //? Update product -> update and validate product form
-router.put("/product/:id",checkLoginMiddleware,validateProductImageAndUpload,validateProduct,updateProduct);
+// router.put("/product/:id",checkLoginMiddleware,validateProductAndUpload,validateProduct,updateProduct);
 
 module.exports = router;

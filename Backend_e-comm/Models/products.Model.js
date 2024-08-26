@@ -4,7 +4,14 @@ const productSchema = new mongoose.Schema ({
         type:String,
         required:true
     },
-    product_images:[],
+    image:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    product_images:[{
+        type:String
+    }],
     product_url_slug:{
         type: String,
         unique:true,
@@ -12,11 +19,17 @@ const productSchema = new mongoose.Schema ({
     },
     category_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'category'
+        ref:'category',
+        required:true
+    },
+    user_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'user'
     },
     description:{
         type:String,
-        required:true,  
+        unique:true,   //todo rich description for html formatter input
+        required:true
     },
     price:{
         type:Number,
