@@ -104,38 +104,44 @@ const updateProduct = async (req, res) => {
           `/${file.path.split("/")[1]}/${file.path.split("/")[2]}`
         );
       });
+
+      
       const fileslength = req.files.length;
-      let updateProduct_info;
+      let updateproduct={};
       if (fileslength > 0) {
-        updateProduct_info = {
-          product_name,
-          product_images,
-          product_url_slug: product_name.replaceAll(" ", "-"),
-          category_id,
-          description,
-          price,
-          stock_quantity,
-          product_status,
-        };
-      } else {
-        updateProduct_info = {
-          product_name,
-          product_url_slug: product_name.replaceAll(" ", "-"),
-          category_id,
-          description,
-          price,
-          stock_quantity,
-          product_status,
-        };
-      }
-      //? if product images array length is 4 throw Error
+        //? if product images array length is 4 (reaches max image upload) throw Error
       const product_imagesArray = await Product.findById(product_id,{product_images:1})
-      if(product_imagesArray.product_images.length===4){
+      if(product_imagesArray.product_images.length>=4){  
+         // todo-> more than 4 files are uploading when 1-2 slot left and user selects more than 2 files
         throw new Error('Maximum 4 images can be uploaded.')
       }
-      const updateproduct = await Product.findByIdAndUpdate(product_id, {
-        $set: updateProduct_info,
-      });
+        updateproduct = await Product.findByIdAndUpdate(product_id, {
+          $set: {
+            product_name, 
+            product_url_slug: product_name.replaceAll(" ", "-"),
+            category_id,
+            description,
+            price,
+            stock_quantity,
+            product_status,
+          },
+          $push:{
+            product_images
+          }
+        });
+      } else {
+        updateproduct = await Product.findByIdAndUpdate(product_id, {
+          $set: {
+            product_name, 
+            product_url_slug: product_name.replaceAll(" ", "-"),
+            category_id,
+            description,
+            price,
+            stock_quantity,
+            product_status,
+          }
+        });
+      }
       updateproduct
         ? res.status(200).json({
             success: true,
@@ -162,4 +168,6 @@ const updateProduct = async (req, res) => {
     }
   }
 };
+// todo 1 -> for single image change(unlink the previous image from server)
+//todo 2 -> making changes in uploaded product_images array.
 module.exports = { addProduct, updateProduct };
