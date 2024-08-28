@@ -4,7 +4,9 @@ const User = require('../Models/user.Model')
 const checkLoginMiddleware = (req,res,next)=>{
     try{
         let token = req.headers.authorization;
-        !token && res.send({message:'Please provide a valid authorization token.'})
+        if(!token) {
+            return res.send({message:'Please provide a valid authorization token.'})
+        }
         token = token.split(' ')[1];
         jwt.verify(token,jwtSecret,async(err,data)=>{
             if(err){

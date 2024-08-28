@@ -2,6 +2,8 @@ const Product = require("../Models/products.Model");
 const Category = require("../Models/categories.Model");
 const { validationResult } = require("express-validator");
 const fs = require("fs");
+const { default: mongoose } = require("mongoose");
+
 //! Adding product
 const addProduct = async (req, res) => {
   if (!req.file) {
@@ -105,19 +107,18 @@ const updateProduct = async (req, res) => {
         );
       });
 
-      
       const fileslength = req.files.length;
-      let updateproduct={};
+      let updateproduct = {};
+      let product_imagesArray = await Product.findById(product_id, {product_images: 1});
       if (fileslength > 0) {
-        //? if product images array length is 4 (reaches max image upload) throw Error
-      const product_imagesArray = await Product.findById(product_id,{product_images:1})
-      if(product_imagesArray.product_images.length>=4){  
-         // todo-> more than 4 files are uploading when 1-2 slot left and user selects more than 2 files
-        throw new Error('Maximum 4 images can be uploaded.')
-      }
+        //? if product images array length is 4 (reaches max image upload)-> don't update doc.
+        if (product_imagesArray.product_images.length >= 4) {
+          throw new Error("Maximum 4 images can be uploaded.");
+          // todo-> more than 4 files are uploading when 1-2 slot left and user selects more than 2 files
+        }
         updateproduct = await Product.findByIdAndUpdate(product_id, {
           $set: {
-            product_name, 
+            product_name,
             product_url_slug: product_name.replaceAll(" ", "-"),
             category_id,
             description,
@@ -125,21 +126,25 @@ const updateProduct = async (req, res) => {
             stock_quantity,
             product_status,
           },
-          $push:{
-            product_images
-          }
+          $push: {
+            product_images,
+          },
         });
+        let newproduct_imagesArray= await Product.findById(product_id, {product_images: 1});
+        if(newproduct_imagesArray.product_images.length>4){
+          throw new Error("Maximum 4 images can be uploaded.")
+        }
       } else {
         updateproduct = await Product.findByIdAndUpdate(product_id, {
           $set: {
-            product_name, 
+            product_name,
             product_url_slug: product_name.replaceAll(" ", "-"),
             category_id,
             description,
             price,
             stock_quantity,
             product_status,
-          }
+          },
         });
       }
       updateproduct
@@ -164,10 +169,80 @@ const updateProduct = async (req, res) => {
           });
         });
       }
-      res.status(500).json({ success: false, error: error.message });
+      res.status(400).json({ success: false, error: error.message });
     }
   }
 };
+
+//! delete product
+const deleteProduct = async (req, res) => {
+  try {
+    const product_id = req.params.id;
+    !product_id && new Error("product id not found.");
+    const product = await Product.findById(product_id);
+    const productMainImage = product.image;
+    const imagePaths = product.product_images;
+    if(imagePaths.length>0){
+      imagePaths.forEach(imagePath=>{
+        let unlinked = fs.unlinkSync(`uploads${imagePath}`);
+        console.log(unlinked)
+      })
+    } 
+    if(productMainImage){
+      fs.unlinkSync(`uploads${productMainImage}`);
+    }
+    const delete_Product = await Product.findByIdAndDelete(product_id);
+    delete_Product
+      ? res.status(200).json({
+          success: true,
+          message: "product deleted successfully.",
+          delete_Product,
+        })
+      : res
+          .status(400)
+          .json({ success: false, error: "product does not exist." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+//! get all products
+const getSingleProduct = async (req, res) => {
+  try {
+    const product_id = req.params.id;
+    !product_id && new Error("product id not found.");
+    
+    const product = await Product.findById(product_id);
+    product
+      ? res.status(200).json({
+          success: true,
+          message: "product found.",
+          product,
+        })
+      : res
+          .status(400)
+          .json({ success: false, error: "product does not exist." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+const getAllProducts = async (req, res) => {
+  try {
+
+    const products = await Product.find({}).populate();
+    products
+      ? res.status(200).json({
+          success: true,
+          products,
+        })
+      : res
+          .status(400)
+          .json({ success: false, error: "No product found." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 // todo 1 -> for single image change(unlink the previous image from server)
 //todo 2 -> making changes in uploaded product_images array.
-module.exports = { addProduct, updateProduct };
+module.exports = { addProduct, updateProduct, deleteProduct, getAllProducts,getSingleProduct };
