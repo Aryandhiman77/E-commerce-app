@@ -6,7 +6,7 @@ const validateAddProduct =[
         body('stock_quantity',"Stock quantity must not be greater than 250").trim().isNumeric().isLength({max:10})
 ]
 const validateProductVarient = [
-        body('color',"color must not be empty").trim().notEmpty().isLength({max:10}),
+        body('color','max 20 character can be there.').trim().isLength({max:20}),
         body('size').trim().isLength({max:20}),
         body('price','price must be required').trim().notEmpty().isLength({max:8}),
         body('stock_quantity',"Stock quantity must not be greater than 250").trim().isNumeric().isLength({max:10})

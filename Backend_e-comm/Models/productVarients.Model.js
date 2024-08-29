@@ -4,11 +4,17 @@ const productVarientSchema = new mongoose.Schema ({
         type:mongoose.Schema.Types.ObjectId,
         ref:'product'
     },
+    varient_images:[{
+        type:String,
+    }],
     color:{
-        type: String
+        type: String,
+        unique:true,
+        required:true
     },
     size:{
-        type: String
+        type: String,
+        default:null
     },
     price:{
         type:Number,
