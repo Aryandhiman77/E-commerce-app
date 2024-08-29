@@ -2,7 +2,6 @@ const Product = require("../Models/products.Model");
 const Category = require("../Models/categories.Model");
 const { validationResult } = require("express-validator");
 const fs = require("fs");
-const { default: mongoose } = require("mongoose");
 
 //! Adding product
 const addProduct = async (req, res) => {

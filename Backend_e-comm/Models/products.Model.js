@@ -10,8 +10,7 @@ const productSchema = new mongoose.Schema ({
         unique:true
     },
     product_images:[{
-        type:String,
-        validate: [arrayLimit, '{PATH} exceeds the limit of 4']
+        type:String
     }],
     product_url_slug:{
         type: String,
@@ -48,8 +47,5 @@ const productSchema = new mongoose.Schema ({
         default:'active'
     }
 })
-function arrayLimit(val) {
-    return val.length <= 4;
-  }
 const Product = mongoose.model('product',productSchema)
 module.exports = Product

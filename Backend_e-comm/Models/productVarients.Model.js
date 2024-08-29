@@ -10,8 +10,14 @@ const productVarientSchema = new mongoose.Schema ({
     size:{
         type: String
     },
-    price:Decimal128,
-    Stock_quantity:{
+    price:{
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round(v * 100) / 100
+        }
+    },
+    stock_quantity:{
         type:Number,
         required:true,
         default:0,
@@ -19,4 +25,4 @@ const productVarientSchema = new mongoose.Schema ({
 })
 
 const ProductVarient = mongoose.model('productVarient',productVarientSchema)
-module.exports = Product
+module.exports = ProductVarient

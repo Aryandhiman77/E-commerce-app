@@ -3,6 +3,7 @@ const app = express();
 const userRouter = require('./routes/user.routes')
 const productRouter = require('./routes/product.routes')
 const categoryRouter = require('./routes/category.route')
+const productVarientsrouter = require('./routes/productVarient.route')
 const cors = require('cors')
 const path = require('path')
 require('dotenv').config();
@@ -21,8 +22,10 @@ app.use(cors({
 //! routing for register,login -> (Authentication,Authorization)
 app.use('/auth/',userRouter)
 //! routung for various operations on products -> (CRUD)
-app.use('/api/v1',productRouter)
+app.use('/api/v1/product',productRouter)
+app.use('/api/v1/varient',productVarientsrouter)
 app.use('/api/v1',categoryRouter)
+
 
 
 app.listen(8000,()=>{
