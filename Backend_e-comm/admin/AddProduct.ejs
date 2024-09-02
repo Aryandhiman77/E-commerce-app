@@ -65,8 +65,6 @@
                         <input type="number" id="stock_quantity" name="stock_quantity" class="form-control" />
                       </div>
                   </div>
-
-
                   <div class="row">
                     <div class="productimage">
                       <label for="inputImage">
@@ -87,7 +85,6 @@
 
         <script>
           // const formdata
-
           document.getElementById('submit').addEventListener('click', async (e) => {
             const product_name = document.querySelector('#product_name').value
             const description = document.querySelector('#description').value
@@ -108,7 +105,7 @@
                   toast: true,
                   position: "top-end",
                   showConfirmButton: false,
-                  timer: 3000,
+                  timer: 5000,
                   timerProgressBar: true,
                   didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
@@ -129,19 +126,12 @@
             const result = await resp.json();
             
             if (result.success) {
-              // document.getElementById('show-popup').innerHTML=result.message;
-
               $(document).ready(function () {
-
-                
                 Toast.fire({
                   icon: "success",
-                  title: result.message,
+                  title: result.message + "<br><a href='/productsDetail' class='text-light'><button class='btn btn-success mt-2'>View product</button></a>",
                 });
               });
-              // if (result.success) {
-              //   $("#show-popup").click();
-              // }
             } else {
               Toast.fire({
                   icon: "error",

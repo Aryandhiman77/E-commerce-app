@@ -80,6 +80,14 @@ const createVarient = async(req,res )=>{
                 throw new Error('a product can only have maximum 6 varients.')
             }
             const createVarient = await ProductVarient.create(varient_info)
+            if(createVarient){
+              const addVarientIdToProduct = await Product.findByIdAndUpdate(product_id,{
+                $addToSet:{
+                  varients_ids:createVarient._id
+                }
+              })
+              addVarientIdToProduct?console.log('added varient_id to product'):console.log('cannot add varient_id to product')
+            }
             createVarient
               ? res.status(200).json({
                   success: true,

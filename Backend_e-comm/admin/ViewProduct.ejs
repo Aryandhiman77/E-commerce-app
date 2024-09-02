@@ -13,7 +13,8 @@
             <li class="breadcrumb-item"><a href="/admin">Home</a></li>
             <li class="breadcrumb-item "><a href="/productsDetail">E-commerce</a></li>
             <li class="breadcrumb-item "><a href="/productsDetail">Products</a></li>
-            <li class="breadcrumb-item active"><%=product.product_name%></li>
+            <li class="breadcrumb-item active"><%=product.product_name.substring(0,15)+"..."%></li>
+           
           </ol>
         </div>
       </div>

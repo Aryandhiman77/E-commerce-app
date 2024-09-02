@@ -1,5 +1,5 @@
-const Product = require('../../Models/products.Model')
-const productVarient = require('../../Models/productVarients.Model')
+const { Result } = require("express-validator")
+
 //! Pages rendering controller
 const renderIndex = (req,res)=>{
     res.render('index',{login:null,path:'/'})
@@ -98,6 +98,7 @@ const renderProducts = async(req,res)=>{
 
     })
     const result = await resp.json();
+
     const categories = await fetch(`http://localhost:8000/api/v1/category`,{
         method:'GET',
         headers:{
@@ -127,7 +128,7 @@ const renderViewProduct =async (req,res)=>{
     })
     const result = await resp.json()
     if(result.success){
-        res.render('ViewProduct',{path:null,product:result.product})
+            res.render('ViewProduct',{path:null,product:result.product})
     }else{
         res.render('ViewProduct',{path:null,error:result.error})
     }
@@ -140,7 +141,8 @@ const renderAddProduct = async(req,res)=>{
     const token = req.cookies.token
     const resp = await fetch('http://localhost:8000/api/v1/category',{ // show categories from database
         headers:{
-            authorization:token
+            authorization:token,
+            'Content-type':'application/json'
         }
     })
     const result = await resp.json()
@@ -152,12 +154,13 @@ const renderAddProduct = async(req,res)=>{
 }
 
 const updateProduct =async (req,res)=>{
-    // res.render('ViewProduct',{path:'/viewProduct'})
+
     const product_id = req.params.id;
     const token = req.cookies.token
     const resp = await fetch(`http://localhost:8000/api/v1/product/${product_id}`,{ 
         headers:{
-            authorization:token
+            authorization:token,
+            'Content-type':'application/json'
         }
     })
     const result = await resp.json()
@@ -168,5 +171,26 @@ const updateProduct =async (req,res)=>{
     }
     console.log(result)
 }
+const renderAddCategory = async(req,res)=>{
 
-module.exports = {renderIndex,renderSignup,renderLogin,handleSignup,handleLogin,handleLogout,renderProducts,renderAddProduct,updateProduct,renderViewProduct};
+        res.render('AddCategory',{path:'/admin-addCategory'})
+
+}
+const renderCategories = async(req,res)=>{
+    const token = req.cookies.token
+        const resp = await fetch('http://localhost:8000/api/v1/category',{
+            headers:{
+                authorization:token,
+                'Content-type':'application/json'
+            }
+        })
+        const result = await resp.json();
+        if(result.success){
+            res.render('AllCategories',{path:'/categoriesDetail',categories:result.categories})
+        }else{
+            res.render('AllCategories',{path:'/categoriesDetail',error:result.error})
+        }
+
+}
+
+module.exports = {renderIndex,renderSignup,renderLogin,handleSignup,handleLogin,handleLogout,renderProducts,renderAddProduct,updateProduct,renderViewProduct,renderAddCategory,renderCategories};

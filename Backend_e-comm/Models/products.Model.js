@@ -26,6 +26,10 @@ const productSchema = new mongoose.Schema ({
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     },
+    varients_ids:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'productVarient'
+    }],
     description:{
         type:String,
         unique:true,   //todo rich description for html formatter input
@@ -47,6 +51,10 @@ const productSchema = new mongoose.Schema ({
     created_at:{
         type:Date,
         default:Date.now
+    },
+    modified_at:{
+        type:Date,
+        default:null
     },
     product_status:{
         type:String,

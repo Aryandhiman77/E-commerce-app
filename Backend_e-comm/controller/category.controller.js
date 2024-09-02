@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 const addCategory = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json({ errors: errors.array()[0].msg });
+    return res.json({ error: errors.array()[0].msg });
   } else {
     try {
       const { category_name, cat_status } = req.body;
@@ -22,7 +22,12 @@ const addCategory = async (req, res) => {
         res
           .status(500)
           .json({ success: false, error: "Internal server error." });
-      res.status(500).json({ success: false, error: error.message });
+      
+      if(error.message.includes('E11000 duplicate key')){
+        res.status(400).json({ success: false, error: "Category name must be different from other categories." });
+      }else{
+        res.status(500).json({ success: false, error: error.message });
+      }
     }
   }
 };
@@ -71,6 +76,7 @@ const deleteCategory = async (req, res) => {
             .status(500)
             .json({ success: false, error: "Internal server error." });
         res.status(500).json({ success: false, error: error.message });
+        
       }
     }
   };

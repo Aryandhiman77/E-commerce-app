@@ -73,7 +73,6 @@ const addProduct = async (req, res) => {
 };
 //! updating image gallery
 const updateProduct = async (req, res) => {
-  console.log(req.files)
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     if (req.files) {
@@ -126,6 +125,7 @@ const updateProduct = async (req, res) => {
             price,
             stock_quantity,
             product_status,
+            modified_at:Date.now()
           },
           $push: {
             product_images,
@@ -145,6 +145,7 @@ const updateProduct = async (req, res) => {
             price,
             stock_quantity,
             product_status,
+            modified_at:Date.now()
           },
         });
       }
@@ -233,7 +234,7 @@ const getSingleProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
 
-    const products = await Product.find({});
+    const products = await Product.find({}).populate("category_id");
     products
       ? res.status(200).json({
           success: true,

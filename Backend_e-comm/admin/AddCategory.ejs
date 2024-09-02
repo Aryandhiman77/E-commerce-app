@@ -1,0 +1,106 @@
+<%-include('../partials/header')%>
+<%-include('../partials/navbar')%>
+<%-include('../partials/sidebar')%>
+<div class="content-wrapper">
+    <!-- <p id="show-popup" class="d-none"></p> -->
+  <section class="content-header">
+    <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Add Category</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+            <li class="breadcrumb-item active">Add Product</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="content center mx-5">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Add Product</h3>
+          </div>
+          <div class="card-body" style="display: block">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="category_name">Category Name</label>
+                    <input type="text" id="category_name" name="category_name" class="form-control" />
+                  </div>
+                <div class="form-group col-md-6">
+                  <label for="category_status">Status</label>
+                  <select id="category_status" class="form-control custom-select" name="category_status">
+                    <option>active</option>
+                    <option>inactive</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row">
+              <div class="productimage">
+                <label for="inputImage">
+                  <img class="border border-info" width="400" height="250"
+                    src="../adminUtilities/defaultProductForm.png" id="previewImage" alt="">
+                </label>
+                <input type="file" id="inputImage" class="d-none" name="productSingleImage">
+              </div>
+            </div>
+            <button type="submit" id="submit" class="btn btn-danger">Save Category</button>
+            </form>
+          </div>
+        </div>
+  </section>
+</div>
+<%-include('../partials/footer')%>
+
+<script>
+    let token = document.cookie;
+        token = token.replace("token=", "");
+        token = token.replace("%20", " ");
+        const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                  },
+                });
+    document.getElementById('submit').addEventListener('click',async(e)=>{
+        const category_name = document.getElementById('category_name').value;
+        const category_status = document.getElementById('category_status').value;
+        const cat_info = {
+            category_name,category_status
+        }
+        const resp = await fetch(`http://localhost:8000/api/v1/category/`,{
+            method:"POST", 
+            headers:{
+                authorization:token,
+                'Content-type':'application/json'
+            },
+            body:JSON.stringify(cat_info)
+        })
+    const result = await resp.json()
+    if(result.success){
+        $(document).ready(function () {
+                Toast.fire({
+                  icon: "success",
+                  title: result.message + "<br><a href='/categoriesDetail' class='text-light'><button class='btn btn-success mt-2'>View Category</button></a>",
+                });
+              });
+    }else{
+        Toast.fire({
+            icon: "error",
+            title: result.error
+        });
+    }
+    })
+</script>

@@ -6,13 +6,13 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                <h1>Products</h1>
+                <h1>Category</h1>
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item"><a href="/admin">Home</a></li>
                   <li class="breadcrumb-item"><a href="/productsDetail">E-commerce</a></li>
-                  <li class="breadcrumb-item active">All Products</li>
+                  <li class="breadcrumb-item active">All categories</li>
                 </ol>
               </div>
             </div>
@@ -22,7 +22,7 @@
         <section class="content">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Products</h3>
+              <h3 class="card-title">Category</h3>
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="card-refresh" id="reloadData" onclick="location.reload()" data-source-selector="#card-refresh-content" data-load-on-init="false" title="refresh">
                   <i class="fas fa-sync-alt"></i>
@@ -30,59 +30,55 @@
               </div>
             </div>
             <div class="card-body p-0">
-              <% if (data.length>0) { %> 
+              <% if (categories.length>0) { %> 
               <table class="table table-striped projects">
                 <thead>
                   <tr>
                     <th style="width: 1%">S.No</th>
-                    <th style="width: 10%">Products Name</th>
-                    <th style="width: 4%">Product Image</th>
-                    <th style="width: 4%">Product Varients</th>
+                    <th style="width: 10%">Category Name</th>
+                    <th style="width: 4%">Category Logo</th>    
                     <th style="width: 8%" class="text-center">Status</th>
                     <th style="width: 6%" class="text-center">Operations</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% data.forEach((record,i)=> { %>
+                  <% categories.forEach((category,i)=> { %>
                       <tr>
                         <td>
                           <%=i+1%>
                         </td>
                         <td>
                           <a>
-                            <%=record.product_name.substring(0,15)+"..."%>
+                            <%=category.category_name%>
                           </a>
                           <br />
-                        <div class="lh-1 mt-2">
-                          <small><b> Created <%=new Date(record.created_at).toLocaleDateString()+" "+new Date(record.created_at).toLocaleTimeString()%></b></small><br>
-                          <% if (record.modified_at) { %>
-                            <small><b> Modified <%=new Date(record.modified_at).toLocaleDateString()+" "+new Date(record.modified_at).toLocaleTimeString()%> </b></small>
-                          <% } %>
-                        </div>
+                       
               </td>
               <td>
                 <ul class=" list-inline">
                               <li class="list-inline-item">
-                                <img alt="Avatar" class="table-avatar" src="<%=record.image%>" />
+                                <% if (category.image) { %>
+                                    <img alt="Avatar" class="table-avatar" src="<%=category.image%>" />
+                                <% } %>
                               </li>
                               </ul>
                         </td>
 
                         <td class="project-state">
-                          <span class="badge badge-<%=record.product_status==='active'?'success':'danger'%>">
-                            <%=record.product_status%>
+                          <span class="badge badge-<%=category.cat_status==='active'?'success':'danger'%>">
+                            <%=category.cat_status%>
                           </span>
                         </td>
                         <td class="project-actions text-right">
-                          <button class="btn btn-primary btn-sm" value="<%=record._id%>"
-                            onclick="location.href=`/<%=record._id%>`">
+                          <button class="btn btn-primary btn-sm" value="<%=category._id%>"
+                            onclick="location.href=`/<%=category._id%>`">
                             <i class="fas fa-folder"> </i>
                             View
                           </button>
                           <button data-bs-toggle="modal" data-bs-target="#Modal<%=i%>" class="d-none"
                             id="modelpopup<%=i%>"></button>
-                          <button class="btn btn-info btn-sm" id="<%=record._id%>"
-                            onclick="bringProductData(event,`<%=i%>`)">
+                          <button class="btn btn-info btn-sm" id="<%=category._id%>"
+                            onclick="bringCategoryData(event,`<%=i%>`)">
                             <i class="fas fa-pencil-alt"></i>
                             Edit
                           </button>
@@ -95,7 +91,7 @@
                               <div class="modal-content" style="width: 100vw;">
                                 <div class="modal-header">
                                   <h1 class="modal-title fs-5" id="<%=i%>exampleModalLabel">
-                                    Update Product
+                                    Update Category
                                   </h1>
                                   <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -103,16 +99,10 @@
                                 <div class="modal-body" style="width: 100vw;">
                                   <div class="row">
                                     <div class="form-group">
-                                      <label for="<%=i%>product_name" class="float-left">Product Name</label>
+                                      <label for="<%=i%>product_name" class="float-left">Category Name</label>
                                       <input type="text" id="<%=i%>product_name" name="<%=i%>product_name"
                                         class="form-control" />
                                     </div>
-                                    <div class="form-group">
-                                      <label for="<%=i%>description" class="float-left">Product Description</label>
-                                      <textarea id="<%=i%>description" name="<%=i%>description" class="form-control"
-                                        rows="4"></textarea>
-                                    </div>
-                                   
                                     <div class="form-group">
                                       <label for="<%=i%>product_status" class="float-left">Status</label>
                                       <select id="<%=i%>product_status" class="form-control custom-select"
@@ -121,59 +111,13 @@
                                         <option>inactive</option>
                                       </select>
                                     </div>
-                                    <div class="form-group">
-                                      <label for="<%=i%>category_name" class="float-left">Category</label>
-                                      <select class="form-control custom-select" id="<%=i%>category_name"
-                                        name="<%=i%>category_name">
-                                        <% categories.forEach(category=> { %>
-                                          <option>
-                                            <%=category.category_name%>
-                                          </option>
-                                          <% }) %>
-                                      </select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="<%=i%>price" class="float-left">Price</label>
-                                      <input type="number" id="<%=i%>price" name="<%=i%>price" class="form-control" />
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="<%=i%>stock_quantity" class="float-left">Stock quantity</label>
-                                      <input type="number" id="<%=i%>stock_quantity" name="<%=i%>stock_quantity"
-                                        class="form-control" />
-                                    </div>
-                                    <h2 class="d-flex">Gallery</h2>
-                                    <div class="productimages d-flex flex-wrap">
+                                    <h2 class="d-flex">Category logo</h2>
+                                    <div class="productImage d-flex flex-wrap">
                                       <label for="<%=i%>inputImage1">
                                         <img class="border mx-2" width="200" height="200"
                                           src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage1"
                                           alt="" />
                                       </label>
-                                      <input type="file" id="<%=i%>inputImage1" class="d-none"
-                                        name="productSingleImage" />
-
-                                      <label for="<%=i%>inputImage2">
-                                        <img class="border mx-2" width="200" height="200"
-                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage2"
-                                          alt="" />
-                                      </label>
-                                      <input type="file" id="<%=i%>inputImage2" class="d-none"
-                                        name="productSingleImage" />
-
-                                      <label for="<%=i%>inputImage3">
-                                        <img class="border mx-2" width="200" height="200"
-                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage3"
-                                          alt="" />
-                                      </label>
-                                      <input type="file" id="<%=i%>inputImage3" class="d-none"
-                                        name="productSingleImage" />
-
-                                      <label for="<%=i%>inputImage4">
-                                        <img class="border mx-2" width="200" height="200"
-                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage4"
-                                          alt="" />
-                                      </label>
-                                      <input type="file" id="<%=i%>inputImage4" class="d-none"
-                                        name="productSingleImage" />
                                     </div>
                                   </div>
                                 </div>
@@ -181,7 +125,7 @@
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Close
                                   </button>
-                                  <button type="button" id="<%=i%>saveChanges" value="<%=record._id%>"
+                                  <button type="button" id="<%=i%>saveChanges" value="<%=category._id%>"
                                     onclick="handleDataUpdate(event,`<%=i%>`)" class="btn btn-primary">
                                     Save changes
                                   </button>
@@ -192,7 +136,7 @@
                           </div>
 
                           <!-- <form action="" method="delete"> -->
-                          <button class="btn btn-danger btn-sm" value="<%=record._id%>"
+                          <button class="btn btn-danger btn-sm" value="<%=category._id%>"
                             onclick="deleteProduct(event,`<%=i%>`)">
                             <i class="fas fa-trash"></i>
                             Delete
@@ -214,7 +158,7 @@
 
 
       <%-include('../partials/footer')%>
-<script>
+<!-- <script>
   $(document).ready(function() {
   $('#summernote').summernote();
 });
@@ -421,4 +365,4 @@ const bringProductData = async (event, i) => {
           });
         }
 
-</script>
+</script> -->
