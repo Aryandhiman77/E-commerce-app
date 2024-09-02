@@ -31,6 +31,9 @@ const productSchema = new mongoose.Schema ({
         unique:true,   //todo rich description for html formatter input
         required:true
     },
+    rich_description:{
+        type:String
+    },
     price:{
         type:Number,
         required:true,
@@ -40,6 +43,10 @@ const productSchema = new mongoose.Schema ({
     },
     stock_quantity:{
         type:Number
+    },
+    created_at:{
+        type:Date,
+        default:Date.now
     },
     product_status:{
         type:String,

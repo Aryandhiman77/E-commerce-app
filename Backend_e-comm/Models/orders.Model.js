@@ -9,24 +9,43 @@ const OrderSchema = new mongoose.Schema ({
         ref:'user'
     },
     total_amount:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
     },
     discount_amount:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
+
     },
     gross_amount:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
+
     },
     shipping_amont:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
+
     },
     net_amount:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
+
     },
     status:{
         type:String,

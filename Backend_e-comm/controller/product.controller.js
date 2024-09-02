@@ -5,6 +5,7 @@ const fs = require("fs");
 
 //! Adding product
 const addProduct = async (req, res) => {
+  console.log(req.body)
   if (!req.file) {
     return res.status(400).json({ error: "Image must be required." });
   }
@@ -13,7 +14,7 @@ const addProduct = async (req, res) => {
     fs.unlink(req.file.path, (err) => {
       err && res.send(err); // :console.log("files deleted successfully.")
     });
-    return res.status(400).json({ errors: errors.array() }); // ! bad request
+    return res.status(400).json({ error: errors.array()[0].msg }); // ! bad request
   } else {
     try {
       const {
@@ -72,6 +73,7 @@ const addProduct = async (req, res) => {
 };
 //! updating image gallery
 const updateProduct = async (req, res) => {
+  console.log(req.files)
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     if (req.files) {
@@ -81,7 +83,7 @@ const updateProduct = async (req, res) => {
         });
       });
     }
-    return res.status(400).json({ errors: errors.array() }); // ! bad request
+    return res.status(400).json({ error: errors.array()[0].msg }); // ! bad request
   } else {
     try {
       const product_id = req.params.id;
@@ -173,11 +175,14 @@ const updateProduct = async (req, res) => {
   }
 };
 
-//! delete product
-const deleteProduct = async (req, res) => {
+//! delete product  
+const deleteProduct = async (req, res) => {  //todo  first product varients must be deleted.
   try {
     const product_id = req.params.id;
     !product_id && new Error("product id not found.");
+    // deleting product varients..
+
+    // deleting product....
     const product = await Product.findById(product_id);
     const productMainImage = product.image;
     const imagePaths = product.product_images;
@@ -211,7 +216,7 @@ const getSingleProduct = async (req, res) => {
     const product_id = req.params.id;
     !product_id && new Error("product id not found.");
     
-    const product = await Product.findById(product_id);
+    const product = await Product.findById(product_id).populate("category_id");
     product
       ? res.status(200).json({
           success: true,
@@ -228,7 +233,7 @@ const getSingleProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
 
-    const products = await Product.find({}).populate();
+    const products = await Product.find({});
     products
       ? res.status(200).json({
           success: true,

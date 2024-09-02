@@ -2,16 +2,16 @@ const User = require("../Models/user.Model");
 const { validationResult } = require("express-validator");
 const UserRole = require("../Models/userRoles.Model");
 var bcrypt = require("bcryptjs");
-require('dotenv').config();
-const jwt = require('jsonwebtoken') 
-const jwtSecret = process.env.JWT_PRIVATE_KEY
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const jwtSecret = process.env.JWT_PRIVATE_KEY;
 
 // ! Registering user...
 const register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // return must be written to take control out the function otherwise the code outside this function will execute
-    return res.json({ errors: errors.array()[0].msg });
+    return res.json({ message: errors.array()[0].msg });
   }
   try {
     const { role_name, password } = req.body;
@@ -33,65 +33,100 @@ const register = async (req, res) => {
     if (checkuseremail) {
       return (
         checkuseremail.email &&
-        res.status(401).json({success:false, message: "user already exists with this email." })
+        res
+          .status(401)
+          .json({
+            success: false,
+            message: "user already exists with this email.",
+          })
       );
     }
     if (checkphone) {
       return (
         checkphone.phone_number &&
-        res.status(401).json({success:false, message: "user already exists with this phone number." })
+        res
+          .status(401)
+          .json({
+            success: false,
+            message: "user already exists with this phone number.",
+          })
       );
     }
     // ! --------x----------------x---------------
     const user = await User.create(saveObj);
-    if(user){
-        const payload = {
-            id:user.id
-        }
-        // ! ! Generating JWT for successfull registration
-        jwt.sign(payload,jwtSecret,{expiresIn:'2h'},((err,token)=>{
-            res.status(200).json({success:true, message: "Registration successfull.",token})
-        }))
-    }else{
-        res.status(403).json({success:false, message: "Cannot save user." });
+    if (user) {
+      const payload = {
+        id: user.id,
+      };
+      // ! ! Generating JWT for successfull registration
+      jwt.sign(payload, jwtSecret, { expiresIn: "2h" }, (err, token) => {
+        res
+          .status(200)
+          .json({ success: true, message: "Registration successfull.", token });
+      });
+    } else {
+      res.status(403).json({ success: false, message: "Cannot save user." });
     }
   } catch (error) {
-    res.status(500).json({success:false, error: "Internal server error.", message: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: "Internal server error.",
+        message: error.message,
+      });
   }
 };
 // ! Login user...
 const login = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json({ errors: errors.array() });
+    return res.json({ message: errors.array()[0].msg });
   }
   try {
-    const { email, password,token } = req.body;
-    const user = await User.findOne({ email },{status:0});
+    const { email, password, role_name } = req.body;
+    const user = await User.findOne({ email }, { status: 0 });
     if (!user) {
-      return res.status(401).json({success:false,message: "User does not exists." });
+      return res
+        .status(401)
+        .json({ success: false, message: "User does not exists." });
     } else {
-        //* Verifying encrypted password and sending token 
-      const checkpass = await bcrypt.compare(password, user.password);  
-      await User.findByIdAndUpdate(user._id,{$set:{status:'active'}})
-       if(checkpass){
-        const payload = {
-          id:user.id
-        }
+      //* Verifying encrypted password and sending token
+      const roleid = user.role_id.toString();
+    const role = await UserRole.findOne({role_name})
+      const checkpass = await bcrypt.compare(password, user.password);
+      if (checkpass) {
+    
+        if(roleid===role.id){
+          await User.findByIdAndUpdate(user._id, {
+            $set: { status: "active" },
+          });
+          const payload = {
+            id: user.id,
+          };
         // ! Generating JWT for successfull login
-        jwt.sign(payload,jwtSecret,{expiresIn:'10h'},((err,token)=>{
-          res.status(200).json({success:true, message: "Login successfull.",token})
-      }))
-       }else{
-        res.status(401).json({success:false, error: "Invalid password."});
-       } 
-       //* ---------------x---------------
+        jwt.sign(payload, jwtSecret, { expiresIn: "10h" }, (err, token) => {
+          res
+            .status(200)
+            .json({ success: true, message: "Login successfull.", token });
+        });
+      }else{
+        res
+            .status(400)
+            .json({ success: false, message: "You are not an administrator." });
+      }
+      } else {
+        res.status(401).json({ success: false, message: "Invalid password." });
+      }
+      //* ---------------x---------------
     }
   } catch (error) {
-    error.message===""&& res.status(500).json({success:false,error: "Internal server error."})
-        res.status(500).json({success:false, error: error.message });
+    error.message === "" &&
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error." });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 module.exports = { register, login };

@@ -20,21 +20,27 @@ const orderItemSchema = new mongoose.Schema ({
         type:String,
         default:null
     },
-    Size:{
+    size:{
         type:String,
         default:null
     },
     price:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
     },
     quantity:{
         type:Number,
         required:true
     },
     total_amount:{
-        type:Float32Array,
-        required:true
+        type:Number,
+        required:true,
+        set:(v)=>{
+            return Math.round((v*100)/100);
+        }
     }
 })
 

@@ -9,17 +9,17 @@ router.use(checkLoginMiddleware) // ! router level middleware
 //! product varients CRUD
 
 // ? Read -> get single and multiple varients
-router.get('/allVarients/:id',getAllVarients)
-router.get('/:id',getSingleVarient) //? take product id
+router.get('/allVarients/:id',getAllVarients) // ✅
+router.get('/:id',getSingleVarient) //? take product id ✅
 
 //? Create product Varient --> take product id
-router.post ( '/:id' ,handleMultipleImagesUpload,validateProductVarient,createVarient);  
+router.post ( '/:id' ,handleMultipleImagesUpload,validateProductVarient,createVarient);//✅
 
 //? update product varient -->take varient id
-router.put('/:id',validateProductVarient,updateVarient);  // ? take varient id
+router.put('/:id',handleMultipleImagesUpload,validateProductVarient,updateVarient);// ✅
 
 //? delete product varient-->take product 
-router.delete('/:id',deleteVarient)// ? take varient id
+router.delete('/:id',deleteVarient)// ✅
 
 
 module.exports = router;

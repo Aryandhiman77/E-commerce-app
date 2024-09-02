@@ -18,10 +18,10 @@ router.put("/:id",handleMultipleImagesUpload,validateAddProduct,updateProduct); 
 router.delete("/:id",deleteProduct) //✅
 
 //? Get all product
-router.get("/:id",getAllProducts)//✅
+router.get("/",getAllProducts)//✅
 
 //? Get all product
-router.get("/product/:id",getSingleProduct)//✅
+router.get("/:id",getSingleProduct)//✅
 
 
 module.exports = router;

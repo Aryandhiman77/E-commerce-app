@@ -7,10 +7,10 @@ const addCategory = async (req, res) => {
     return res.json({ errors: errors.array()[0].msg });
   } else {
     try {
-      const { category_name, cat_status, category_url_slug } = req.body;
+      const { category_name, cat_status } = req.body;
       let saveCategory=await Category.create({
         category_name,
-        category_url_slug,
+        category_url_slug:category_name.replaceAll(" ","-"),
         cat_status,
       });
       saveCategory
@@ -77,10 +77,16 @@ const deleteCategory = async (req, res) => {
 
   const getCategory = async(req,res)=>{
     const categories = await Category.find();
-    res.send(categories);
+    if(categories.length>0){
+      res.status(200).json({ success: true, message: "categories found.",categories})
+    }else{
+      res.status(200).json({ success: true, message: "No category found.",categories})
+    }
   }
   const getSingleCategory = async(req,res)=>{
     const category = await Category.findById(req.params.id);
-    res.send(category);
+    if(category){
+      res.status(200).json({ success: true, message: "categories found.",category})
+    }
   }
 module.exports = { addCategory,updateCategory,deleteCategory,getCategory,getSingleCategory};
