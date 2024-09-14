@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const OrderSchema = new mongoose.Schema ({
     order_no:{
-        type:mongoose.Schema.Types.ObjectId.toString().slice(10),
+        type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     },
     user_id:{
@@ -31,7 +31,7 @@ const OrderSchema = new mongoose.Schema ({
         }
 
     },
-    shipping_amont:{
+    shipping_amount:{
         type:Number,
         required:true,
         set:(v)=>{
@@ -59,7 +59,7 @@ const OrderSchema = new mongoose.Schema ({
     },
     payment_type:{
         type:String,
-        enum:['netbanking' , 'upi','cod'],
+        enum:['netbanking','upi','cod'],
         required:true
     },
     payment_transaction_id:{

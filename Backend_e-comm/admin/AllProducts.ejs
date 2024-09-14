@@ -11,7 +11,7 @@
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item"><a href="/admin">Home</a></li>
-                  <li class="breadcrumb-item"><a href="/productsDetail">E-commerce</a></li>
+                  <li class="breadcrumb-item"><a href="/productsDetail">Products</a></li>
                   <li class="breadcrumb-item active">All Products</li>
                 </ol>
               </div>
@@ -24,22 +24,39 @@
             <div class="card-header">
               <h3 class="card-title">Products</h3>
               <div class="card-tools">
+                <button class='btn btn-success' onclick="location.href='/admin-addProduct'">Add Product</button>
                 <button type="button" class="btn btn-tool" data-card-widget="card-refresh" id="reloadData" onclick="location.reload()" data-source-selector="#card-refresh-content" data-load-on-init="false" title="refresh">
                   <i class="fas fa-sync-alt"></i>
                 </button>
+                
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-8 offset-md-2">
+              <form action="simple-results.html">
+              <div class="input-group">
+              <input type="search" class="form-control form-control-lg" placeholder="Type your keywords here">
+              <div class="input-group-append">
+              <button type="submit" class="btn btn-lg btn-default">
+              <i class="fa fa-search"></i>
+              </button>
+              </div>
+              </div>
+              </form>
+              </div>
+              </div>
             <div class="card-body p-0">
               <% if (data.length>0) { %> 
               <table class="table table-striped projects">
                 <thead>
                   <tr>
-                    <th style="width: 1%">S.No</th>
-                    <th style="width: 10%">Products Name</th>
-                    <th style="width: 4%">Product Image</th>
-                    <th style="width: 4%">Product Varients</th>
-                    <th style="width: 8%" class="text-center">Status</th>
-                    <th style="width: 6%" class="text-center">Operations</th>
+                    <th>S.No</th>
+                    <th>Products Name</th>
+                    <th> Image</th>
+                    <th class="text-center">Product Varients</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center" style="width: 20%;">Operations</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -50,7 +67,7 @@
                         </td>
                         <td>
                           <a>
-                            <%=record.product_name.substring(0,15)+"..."%>
+                            <%=record.product_name.charAt(0).toUpperCase()+record.product_name.slice(1).toLowerCase().substring(0,15)+"..."%>
                           </a>
                           <br />
                         <div class="lh-1 mt-2">
@@ -63,11 +80,30 @@
               <td>
                 <ul class=" list-inline">
                               <li class="list-inline-item">
-                                <img alt="Avatar" class="table-avatar" src="<%=record.image%>" />
+                                <img alt="Avatar" id="<%=i%>productimage" class="table-avatar" src="<%=record.image%>" style="width: 5rem; height: 4rem;" />
+                              </li>
+                              </ul>
+                        </td>
+              <td>
+                <ul class=" list-inline text-center">
+                              <li class="list-inline-item">
+                                <% if (record.varients_ids.length>0) { %>
+                                  <button class="btn btn-sm btn-success mt-4 " value="<%=record._id%>" id="<%i%>ProductVarients" onclick="routeToVarients(event,`<%=i%>`)" >
+                                    <%= record.varients_ids.length%>
+                                  varients</button>
+                                  <p class="mt-3" style="font-size: 12px;"><%=6-(record.varients_ids.length)%> slots available. </p>
+                                  <% } else { %>
+                                   <p class="mt-3 text-danger"><%= record.varients_ids.length%></p><button  class='btn btn-sm btn-danger' onclick="location.href='/admin-addVarient?id=<%=record._id%>'" value="<%=record._id%>">Add Varient</button>
+                                   <p class="mt-3" style="font-size: 12px;"> 6 slots available. </p>
+                                <% } %>
+                                
                               </li>
                               </ul>
                         </td>
 
+                        <td class="project-state">
+                          <b>₹<%=record.price%></b>
+                        </td>
                         <td class="project-state">
                           <span class="badge badge-<%=record.product_status==='active'?'success':'danger'%>">
                             <%=record.product_status%>
@@ -86,8 +122,15 @@
                             <i class="fas fa-pencil-alt"></i>
                             Edit
                           </button>
-
-                          <!-- Modal -->
+                          <!-- <form action="" method="delete"> -->
+                          <button class="btn btn-danger btn-sm" value="<%=record._id%>"
+                            onclick="deleteProduct(event,`<%=i%>`)">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                       <!-- Modal -->
                           <div class="modal fade" id="Modal<%=i%>" tabindex="-1" aria-labelledby="Modal<%=i%>"
                             aria-hidden="true">
                             <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
@@ -98,10 +141,17 @@
                                     Update Product
                                   </h1>
                                   <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                    aria-label="Close""></button>
                                 </div>
                                 <div class="modal-body" style="width: 100vw;">
-                                  <div class="row">
+                                  <div class="row"><b>Product Image</b>
+                                    <div class="productimage">
+                                      <label for="<%=i%>inputMainImage">
+                                        <img class="border border-info" width="250" height="170"
+                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>mainImagePreview" alt="">
+                                      </label>
+                                      <input type="file" id="<%=i%>inputMainImage" class="d-none" name="productSingleImage" onchange="previewUserImages(event,`<%=i%>`)">
+                                    </div>
                                     <div class="form-group">
                                       <label for="<%=i%>product_name" class="float-left">Product Name</label>
                                       <input type="text" id="<%=i%>product_name" name="<%=i%>product_name"
@@ -132,6 +182,7 @@
                                           <% }) %>
                                       </select>
                                     </div>
+                                    </div>
                                     <div class="form-group">
                                       <label for="<%=i%>price" class="float-left">Price</label>
                                       <input type="number" id="<%=i%>price" name="<%=i%>price" class="form-control" />
@@ -141,42 +192,57 @@
                                       <input type="number" id="<%=i%>stock_quantity" name="<%=i%>stock_quantity"
                                         class="form-control" />
                                     </div>
-                                    <h2 class="d-flex">Gallery</h2>
+                                    <h2 class="d-flex">Gallery</h2> 
                                     <div class="productimages d-flex flex-wrap">
+
                                       <label for="<%=i%>inputImage1">
-                                        <img class="border mx-2" width="200" height="200"
+                                        <button class="btn btn-sm btn-danger left-2 position-absolute" id="<%=i%>deletebtn1" onclick="deleteImage(event,`<%=record.product_images[0]%>`,'1',`<%=i%>`)">&cross;</button>
+                                        <img class="border mx-2" width="250" height="200"
                                           src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage1"
-                                          alt="" />
+                                          alt=""  name="<%=i%>ImagePreview"/>
                                       </label>
                                       <input type="file" id="<%=i%>inputImage1" class="d-none"
-                                        name="productSingleImage" />
+                                        name="productSingleImage" oninput="previewGallery(event,`<%=i%>`,'1')" />
+
 
                                       <label for="<%=i%>inputImage2">
-                                        <img class="border mx-2" width="200" height="200"
+                                        <button class="btn btn-sm btn-danger left-2 position-absolute" id="<%=i%>deletebtn2"
+                                        onclick="deleteImage(event,`<%=record.product_images[1]%>`,'2',`<%=i%>`)">&cross;</button>
+                                        <img class="border mx-2" width="250" height="200"
                                           src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage2"
-                                          alt="" />
+                                          alt=""  name="<%=i%>ImagePreview" />
                                       </label>
                                       <input type="file" id="<%=i%>inputImage2" class="d-none"
-                                        name="productSingleImage" />
+                                        name="productSingleImage" oninput="previewGallery(event,`<%=i%>`,'2',)"/>
+
+
 
                                       <label for="<%=i%>inputImage3">
-                                        <img class="border mx-2" width="200" height="200"
+                                        <button class="btn btn-sm btn-danger left-2 position-absolute"
+                                        onclick="deleteImage(event,`<%=record.product_images[2]%>`,'3',`<%=i%>`)" id="<%=i%>deletebtn3">&cross;</button>
+                                        <img class="border mx-2" width="250" height="200"
                                           src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage3"
-                                          alt="" />
+                                          alt="" name="<%=i%>ImagePreview" />
                                       </label>
                                       <input type="file" id="<%=i%>inputImage3" class="d-none"
-                                        name="productSingleImage" />
+                                        name="productSingleImage" oninput="previewGallery(event,`<%=i%>`,'3')" />
 
+
+                                      
                                       <label for="<%=i%>inputImage4">
-                                        <img class="border mx-2" width="200" height="200"
+                                        <button class="btn btn-sm btn-danger left-2 position-absolute"
+                                        onclick="deleteImage(event,`<%=record.product_images[3]%>`,'4',`<%=i%>`)"
+                                        id="<%=i%>deletebtn4">&cross;</button>
+                                        <img class="border mx-2" width="250" height="200"
                                           src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage4"
-                                          alt="" />
+                                          alt=""  name="<%=i%>ImagePreview" />
                                       </label>
                                       <input type="file" id="<%=i%>inputImage4" class="d-none"
-                                        name="productSingleImage" />
-                                    </div>
+                                        name="productSingleImage" oninput="previewGallery(event,`<%=i%>`,'4')"/>
+                                      </div>
+                                     
                                   </div>
-                                </div>
+                                  <button class=" mx-2 btn btn-sm btn-danger d-none" value="<%=record._id%>" id="<%=i%>saveGallery" onclick="saveChangesInGallery(event,`<%=i%>`)" >Update Gallery</button>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Close
@@ -190,19 +256,10 @@
                             </div>
                             <!-- </div> -->
                           </div>
-
-                          <!-- <form action="" method="delete"> -->
-                          <button class="btn btn-danger btn-sm" value="<%=record._id%>"
-                            onclick="deleteProduct(event,`<%=i%>`)">
-                            <i class="fas fa-trash"></i>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
                       <% }) %>
                         <% } else { %>
-                          <div>
-                            <img width="70%" src="https://tampcol.com/public/assets/images/product_not_found2.png" alt="loading..">
+                          <div class="d-flex justify-content-center">
+                            <img width="500" src="https://img.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg?w=1060&t=st=1725641118~exp=1725641718~hmac=0c5df2c3f91212845830822bb8a62b3abd783c22bfca7ffdc4b79881a234a604" alt="loading..">
                           </div>
                           <% } %>
                 </tbody>
@@ -213,12 +270,12 @@
       </div>
 
 
+
       <%-include('../partials/footer')%>
 <script>
   $(document).ready(function() {
   $('#summernote').summernote();
 });
-
 const bringProductData = async (event, i) => {
           let token = document.cookie;
           const product_id = event.target.id;
@@ -238,6 +295,8 @@ const bringProductData = async (event, i) => {
           const data = await resp.json();
           if (data.success) {
             document.getElementById(`modelpopup${i}`).click();
+            document.getElementById(`${i}mainImagePreview`).src =
+              data.product.image;
             document.getElementById(`${i}product_name`).value =
               data.product.product_name;
             document.getElementById(`${i}description`).value =
@@ -268,8 +327,6 @@ const bringProductData = async (event, i) => {
                 ? data.product.product_images[3]
                 : "../adminUtilities/defaultProductForm.png";
 
-
-
               document.getElementById(`${i}category_name`).value =
                 data.product.category_id.category_name;
             }
@@ -277,10 +334,144 @@ const bringProductData = async (event, i) => {
             console.log(data);
           }
         };
+        const previewUserImages = async(event,i)=>{
+          const inputMainImage = document.getElementById(`${i}inputMainImage`).files[0];
+          const createImageBlob = URL.createObjectURL(inputMainImage) 
+          document.getElementById(`${i}mainImagePreview`).src=createImageBlob;
+        }
+       
+        const previewGallery = (event,i,j)=>{
+          const galleryImage = event.target.files[0];
+          const createImageBlob = URL.createObjectURL(galleryImage) 
+          console.log(createImageBlob)
+          document.getElementById(`${i}previewImage${j}`).src=createImageBlob;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: true,
+            timer: 8000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          
+        }
+        const createArr = [];
+        const deleteImage =async(event,ImagePath,index,i)=>{
+          createArr.push(ImagePath) // push gallery images paths to be deleted.
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          if(createArr.length>0){
+            if(document.getElementById(`${i}saveGallery`).classList.contains('d-none')){
+              document.getElementById(`${i}saveGallery`).classList.remove('d-none')
+              document.getElementById(`${i}inputImage1`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage2`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage3`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage4`).setAttribute('disabled',true)
+            }
+          }
+          if(document.getElementById(`${i}previewImage1`).src!='../adminUtilities/defaultProductForm.png'
+          && document.getElementById(`${i}previewImage2`).src!='../adminUtilities/defaultProductForm.png'
+          && document.getElementById(`${i}previewImage3`).src!='../adminUtilities/defaultProductForm.png'
+          && document.getElementById(`${i}previewImage4`).src!='../adminUtilities/defaultProductForm.png'
+        ){
+            document.getElementById(`${i}inputImage1`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage2`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage3`).setAttribute('disabled',true)
+              document.getElementById(`${i}inputImage4`).setAttribute('disabled',true)
+              Toast.fire({
+                icon: "info",
+                title: "Image removed.",
+              });
+          }
+          event.target.classList.add('d-none');
+          console.log(index)
+          document.getElementById(`${i}previewImage${index}`).src='../adminUtilities/defaultProductForm.png'
+        }
+        const saveChangesInGallery = async(event,i)=>{
+          const arr = {
+            delete:createArr
+          }
+          let token = document.cookie;
+          token = token.replace("token=", "");
+          token = token.replace("%20", " ");
+          const resp = await fetch(`http://localhost:8000/api/v1/product/images/${event.target.value}`,{
+            method:"DELETE",
+            headers:{
+              authorization:token,
+              'Content-type':'application/json'
+            },
+            body:JSON.stringify(createArr)
+          })
+          const result = await resp.json();
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          if(result.success){
+            document.getElementById(`${i}deletebtn1`).classList.remove('d-none')
+            document.getElementById(`${i}deletebtn2`).classList.remove('d-none')
+            document.getElementById(`${i}deletebtn3`).classList.remove('d-none')
+            document.getElementById(`${i}deletebtn4`).classList.remove('d-none')
+            document.getElementById(`${i}saveGallery`).classList.add('d-none')
+              document.getElementById(`${i}inputImage1`).removeAttribute('disabled')
+              document.getElementById(`${i}inputImage2`).removeAttribute('disabled')
+              document.getElementById(`${i}inputImage3`).removeAttribute('disabled')
+              document.getElementById(`${i}inputImage4`).removeAttribute('disabled')
+            Toast.fire({
+                icon: "success",
+                title: result.message,
+              });
+          }else{
+            Toast.fire({
+                icon: "error",
+                title: result.error,
+              });
+          }
+        }
+
         const handleDataUpdate = async (event, i) => {
           let token = document.cookie;
           token = token.replace("token=", "");
           token = token.replace("%20", " ");
+          const newImage = new FormData();
+          const inputMainImage = document.getElementById(`${i}inputMainImage`).files[0];
+
+          if(inputMainImage){
+            newImage.append('productSingleImage',inputMainImage);
+            const resp= await  fetch(`http://localhost:8000/api/v1/product/updateImage/${event.target.value}`,{
+            method:"PUT",
+            headers:{
+              authorization:token
+            },
+            body:newImage
+          })
+          const getresult= await resp.json();
+          if(getresult.success){
+            console.log('image updated.')
+          }else{
+            console.log(getresult)
+          } 
+          }
+          
           let product_name = document.getElementById(
             `${i}product_name`
           ).value;
@@ -352,7 +543,9 @@ const bringProductData = async (event, i) => {
                 title: result.message,
               });
             });
+            location.reload();
           } else {
+            console.log(result)
             Toast.fire({
               icon: "error",
               title: result.error,
@@ -360,6 +553,7 @@ const bringProductData = async (event, i) => {
             // console.log(result)
           }
         };
+
         const deleteProduct = async (event, i) => {
           const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -370,7 +564,7 @@ const bringProductData = async (event, i) => {
           });
           swalWithBootstrapButtons.fire({
             title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            text: "Deleting Product will also delete its categories. You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, delete it!",
@@ -388,7 +582,7 @@ const bringProductData = async (event, i) => {
             headers:{
               'Content-Type':'application/json',
               authorization:token
-            }
+            },
           })
           const result = await deleteProduct.json();
           if(result.success){
@@ -400,6 +594,7 @@ const bringProductData = async (event, i) => {
                 text: "Your product has been deleted.",
                 icon: "success"
               });
+              location.reload();
             }); 
           }
             } else if (
@@ -419,6 +614,10 @@ const bringProductData = async (event, i) => {
             });
           }
           });
+        }
+        const routeToVarients = async(event,i)=>{
+            const product_id = event.target.value;
+            window.location.href = `/productVarients?id=${product_id}`
         }
 
 </script>

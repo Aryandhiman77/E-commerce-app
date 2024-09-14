@@ -49,17 +49,14 @@
                         </td>
                         <td>
                           <a>
-                            <%=category.category_name%>
+                            <%=category.category_name.charAt(0).toUpperCase()+category.category_name.slice(1).toLowerCase()%>
                           </a>
                           <br />
-                       
-              </td>
+                        </td>
               <td>
                 <ul class=" list-inline">
                               <li class="list-inline-item">
-                                <% if (category.image) { %>
-                                    <img alt="Avatar" class="table-avatar" src="<%=category.image%>" />
-                                <% } %>
+                                    <img alt="Avatar" class="table-avatar" src="<%=category.category_image%>"/>
                               </li>
                               </ul>
                         </td>
@@ -70,13 +67,9 @@
                           </span>
                         </td>
                         <td class="project-actions text-right">
-                          <button class="btn btn-primary btn-sm" value="<%=category._id%>"
-                            onclick="location.href=`/<%=category._id%>`">
-                            <i class="fas fa-folder"> </i>
-                            View
-                          </button>
+                         
                           <button data-bs-toggle="modal" data-bs-target="#Modal<%=i%>" class="d-none"
-                            id="modelpopup<%=i%>"></button>
+                            id="modalpopup<%=i%>"></button>
                           <button class="btn btn-info btn-sm" id="<%=category._id%>"
                             onclick="bringCategoryData(event,`<%=i%>`)">
                             <i class="fas fa-pencil-alt"></i>
@@ -99,25 +92,27 @@
                                 <div class="modal-body" style="width: 100vw;">
                                   <div class="row">
                                     <div class="form-group">
-                                      <label for="<%=i%>product_name" class="float-left">Category Name</label>
-                                      <input type="text" id="<%=i%>product_name" name="<%=i%>product_name"
+                                      <label for="<%=i%>category_name" class="float-left">Category Name</label>
+                                      <input type="text" id="<%=i%>category_name" name="<%=i%>category_name"
                                         class="form-control" />
                                     </div>
                                     <div class="form-group">
-                                      <label for="<%=i%>product_status" class="float-left">Status</label>
-                                      <select id="<%=i%>product_status" class="form-control custom-select"
-                                        name="<%=i%>product_status">
+                                      <label for="<%=i%>cat_status" class="float-left">Status</label>
+                                      <select id="<%=i%>cat_status" class="form-control custom-select"
+                                        name="<%=i%>cat_status">
                                         <option>active</option>
                                         <option>inactive</option>
                                       </select>
                                     </div>
                                     <h2 class="d-flex">Category logo</h2>
                                     <div class="productImage d-flex flex-wrap">
-                                      <label for="<%=i%>inputImage1">
-                                        <img class="border mx-2" width="200" height="200"
-                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewImage1"
+                                      <label for="<%=i%>inputCategoryImage">
+                                        <img class="border mx-2" width="400" height="310"
+                                          src="../adminUtilities/defaultProductForm.png" id="<%=i%>category_image"
                                           alt="" />
                                       </label>
+                                      <input type="file" id="<%=i%>inputCategoryImage" 
+                                      oninput="showImagePreview(event,`<%=i%>`)" class="d-none">
                                     </div>
                                   </div>
                                 </div>
@@ -158,19 +153,18 @@
 
 
       <%-include('../partials/footer')%>
-<!-- <script>
+<script>
   $(document).ready(function() {
   $('#summernote').summernote();
 });
 
-const bringProductData = async (event, i) => {
-          let token = document.cookie;
-          const product_id = event.target.id;
+let token = document.cookie;
           token = token.replace("token=", "");
           token = token.replace("%20", " ");
-
+const bringCategoryData = async (event, i) => {
+          const category_id = event.target.id;
           const resp = await fetch(
-            `http://localhost:8000/api/v1/product/${product_id}`,
+            `http://localhost:8000/api/v1/category/${category_id}`,
             {
               method: "GET",
               headers: {
@@ -181,91 +175,46 @@ const bringProductData = async (event, i) => {
           );
           const data = await resp.json();
           if (data.success) {
-            document.getElementById(`modelpopup${i}`).click();
-            document.getElementById(`${i}product_name`).value =
-              data.product.product_name;
-            document.getElementById(`${i}description`).value =
-              data.product.description;
+            document.getElementById(`modalpopup${i}`).click();
+            // document.getElementById(`${i}modal-body`).addEventListener('load',(e)=>{
+            //   console.log('hello world')
+            // })
             document.getElementById(`${i}category_name`).value =
-              data.product.category_id.category_name;
-            document.getElementById(`${i}product_status`).value =
-              data.product.product_status;
-            document.getElementById(`${i}stock_quantity`).value =
-              data.product.stock_quantity;
-            document.getElementById(`${i}price`).value =
-              data.product.price;
-            if (data.product.product_images.length > 0) {
-              document.getElementById(`${i}previewImage1`).src = data
-                .product.product_images[0]
-                ? data.product.product_images[0]
-                : "../adminUtilities/defaultProductForm.png";
-              document.getElementById(`${i}previewImage2`).src = data
-                .product.product_images[1]
-                ? data.product.product_images[1]
-                : "../adminUtilities/defaultProductForm.png";
-              document.getElementById(`${i}previewImage3`).src = data
-                .product.product_images[2]
-                ? data.product.product_images[2]
-                : "../adminUtilities/defaultProductForm.png";
-              document.getElementById(`${i}previewImage4`).src = data
-                .product.product_images[3]
-                ? data.product.product_images[3]
-                : "../adminUtilities/defaultProductForm.png";
-
-
-
-              document.getElementById(`${i}category_name`).value =
-                data.product.category_id.category_name;
-            }
+              data.category.category_name;
+            document.getElementById(`${i}cat_status`).value =
+              data.category.cat_status;
+            document.getElementById(`${i}category_image`).src =
+              data.category.category_image;
           } else {
             console.log(data);
           }
         };
         const handleDataUpdate = async (event, i) => {
-          let token = document.cookie;
-          token = token.replace("token=", "");
-          token = token.replace("%20", " ");
-          let product_name = document.getElementById(
-            `${i}product_name`
-          ).value;
-          let description = document.getElementById(
-            `${i}description`
-          ).value;
+          
           let category_name = document.getElementById(
             `${i}category_name`
           ).value;
-          let product_status = document.getElementById(
-            `${i}product_status`
+
+          let category_status = document.getElementById(
+            `${i}cat_status`
           ).value;
-          let stock_quantity = document.getElementById(
-            `${i}stock_quantity`
+          let category_image = document.getElementById(
+            `${i}category_image`
           ).value;
-          let price = document.getElementById(`${i}price`).value;
+
           let id = document.getElementById(`${i}saveChanges`).value;
 
-          let img1 = document.getElementById(`${i}inputImage1`).files[0];
-          let img2 = document.getElementById(`${i}inputImage2`).files[0];
-          let img3 = document.getElementById(`${i}inputImage3`).files[0];
-          let img4 = document.getElementById(`${i}inputImage4`).files[0];
-
-          let images = [img1, img2, img3, img4];
-          let productImages = images.filter(image => image !== undefined)
+          let inputCategoryImage = document.getElementById(`${i}inputCategoryImage`).files[0];
           const formdata = new FormData();
-          formdata.append("product_name", product_name);
-          formdata.append("description", description);
           formdata.append("category_name", category_name);
-          formdata.append("product_status", product_status);
-          formdata.append("stock_quantity", stock_quantity);
-          formdata.append("price", price);
-
-          if (productImages.length > 0) {
-            productImages.forEach((image, i) => {
-              formdata.append('productImages', image)
-            })
+          formdata.append("cat_status", category_status);
+          
+          if (inputCategoryImage) {
+              formdata.append('productSingleImage', inputCategoryImage)
           }
 
           const res = await fetch(
-            `http://localhost:8000/api/v1/product/${id}`,
+            `http://localhost:8000/api/v1/category/${id}`,
             {
               method: "PUT",
               headers: {
@@ -274,6 +223,7 @@ const bringProductData = async (event, i) => {
               body: formdata,
             }
           );
+          // initialize toast
           const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -287,7 +237,10 @@ const bringProductData = async (event, i) => {
           });
           const result = await res.json();
           if (result.success) {
-            document.getElementById(`modelpopup${i}`).click();
+            document.getElementById(`modalpopup${i}`).click();
+            document.getElementById(`modalpopup${i}`).addEventListener("DOMContentLoaded", (event) => {
+  console.log("DOM fully loaded and parsed");
+});
             document.getElementById('reloadData').classList.add('text-danger')
             document.getElementById('reloadData').classList.add('spinner-grow')
             $(document).ready(function () {
@@ -296,6 +249,7 @@ const bringProductData = async (event, i) => {
                 title: result.message,
               });
             });
+            location.reload();
           } else {
             Toast.fire({
               icon: "error",
@@ -304,7 +258,15 @@ const bringProductData = async (event, i) => {
             // console.log(result)
           }
         };
+        const showImagePreview=(event,i)=>{
+        console.log('showing image preview..')
+      const inputCategoryImage = document.getElementById(`${i}inputCategoryImage`).files[0];
+      const ImageBlob = URL.createObjectURL(inputCategoryImage);
+      document.getElementById(`${i}category_image`).src=ImageBlob;
+
+      }
         const deleteProduct = async (event, i) => {
+          // initilize popup window for cancel and confirm delete
           const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
               confirmButton: "btn btn-success",
@@ -322,19 +284,15 @@ const bringProductData = async (event, i) => {
             reverseButtons: true
           }).then(async(result) => {
             if (result.isConfirmed) {
-              let token = document.cookie;
-          token = token.replace("token=", "");
-          token = token.replace("%20", " ");
-
           console.log('deleting', event.target.value)
-          const deleteProduct = await fetch(`http://localhost:8000/api/v1/product/${event.target.value}`,{
+          const deleteCategory = await fetch(`http://localhost:8000/api/v1/category/${event.target.value}`,{
             method:"DELETE",
             headers:{
               'Content-Type':'application/json',
               authorization:token
             }
           })
-          const result = await deleteProduct.json();
+          const result = await deleteCategory.json();
           if(result.success){
             document.getElementById('reloadData').classList.add('text-danger')
             document.getElementById('reloadData').classList.add('spinner-grow')
@@ -351,7 +309,7 @@ const bringProductData = async (event, i) => {
             ) {
               swalWithBootstrapButtons.fire({
                 title: "Cancelled",
-                text: "Your product is safe :)",
+                text: "Your category is safe :)",
                 icon: "error"
               });
             }
@@ -365,4 +323,5 @@ const bringProductData = async (event, i) => {
           });
         }
 
-</script> -->
+       
+</script>

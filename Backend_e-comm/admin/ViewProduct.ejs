@@ -59,109 +59,166 @@
             <hr />
             <h4>Available Colors</h4>
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-default text-center active">
-                <input
-                  type="radio"
-                  name="color_option"
-                  id="color_option_a1"
-                  autocomplete="off"
-                  checked=""
-                />
-                Green
-                <br />
-                <i class="fas fa-circle fa-2x text-green"></i>
-              </label>
-              <label class="btn btn-default text-center">
-                <input
-                  type="radio"
-                  name="color_option"
-                  id="color_option_a2"
-                  autocomplete="off"
-                />
-                Blue
-                <br />
-                <i class="fas fa-circle fa-2x text-blue"></i>
-              </label>
-              <label class="btn btn-default text-center">
-                <input
-                  type="radio"
-                  name="color_option"
-                  id="color_option_a3"
-                  autocomplete="off"
-                />
-                Purple
-                <br />
-                <i class="fas fa-circle fa-2x text-purple"></i>
-              </label>
-              <label class="btn btn-default text-center">
-                <input
-                  type="radio"
-                  name="color_option"
-                  id="color_option_a4"
-                  autocomplete="off"
-                />
-                Red
-                <br />
-                <i class="fas fa-circle fa-2x text-red"></i>
-              </label>
-              <label class="btn btn-default text-center">
-                <input
-                  type="radio"
-                  name="color_option"
-                  id="color_option_a5"
-                  autocomplete="off"
-                />
-                Orange
-                <br />
-                <i class="fas fa-circle fa-2x text-orange"></i>
-              </label>
+               <% product.varients_ids.forEach(varient => { %>
+                <% if (varient.color!='') { %>
+                  <label class="btn btn-default text-center">
+                    <input
+                      type="radio"
+                      name="color_option"
+                      id="color_option_a1"
+                      autocomplete="off"
+                      checked=""
+                    />
+                    <%=varient.varient_name%>
+                    <br />
+                    <div class="fa rounded-circle" style="height: 50px; width: 50px; overflow: hidden;background-color: <%=varient.color%>"></div>
+                  </label>
+                <% } %>
+                <% if (!varient.color) { %>
+                  <label class="btn btn-default text-center"></label>
+                    <input
+                      type="radio"
+                      name="color_option"
+                      id="color_option_a1"
+                      autocomplete="off"
+                      checked=""
+                    />
+                    <%=varient.varient_name%>
+                    <br />
+                  </label>
+                <% } %>
+                
+              <% }) %>
             </div>
-            <h4 class="mt-3">Size <small>Please select one</small></h4>
+            <h4 class="mt-3">Size </h4>
+            <!-- <small>Please select one</small> -->
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-default text-center">
+              <% product.varients_ids.forEach((varient,i) => { %>
+                <% if (varient.size!='' && varient.size!=='none' && varient.size!='XS'&&'S'&&'M'&&'L'&&'XL'&&'XXL'&&'XXXL') { %>
+                  <label class="btn btn-default text-center">
+                    <input
+                      type="radio"
+                      name="color_option"
+                      id="color_option<%=++i%>"
+                      autocomplete="off"
+                    />
+                    <span class="text-xl"><%=varient.size%></span>
+                  </label>
+                <% } %>
+                <% if (varient.size.includes('XS')) { %>
+                <label class="btn btn-default text-center">
                 <input
                   type="radio"
                   name="color_option"
-                  id="color_option_b1"
+                  id="color_option<%=++i%>"
+                  autocomplete="off"
+                />
+                <span class="text-xl">XS</span>
+                <br />
+                Xtra-Small
+                
+              </label>
+              <% } %>
+                <% if (varient.size.includes('S')) { %>
+                <label class="btn btn-default text-center">
+                <input
+                  type="radio"
+                  name="color_option"
+                  id="color_option<%=++i%>"
                   autocomplete="off"
                 />
                 <span class="text-xl">S</span>
                 <br />
                 Small
+                
               </label>
-              <label class="btn btn-default text-center">
+              <% } %>
+                <% if (varient.size.includes('M')) { %>
+                <label class="btn btn-default text-center">
                 <input
                   type="radio"
                   name="color_option"
-                  id="color_option_b2"
+                  id="color_option<%=++i%>"
                   autocomplete="off"
                 />
-                <span class="text-xl">M</span>
+                <span class="text-xl">S</span>
                 <br />
                 Medium
+                
               </label>
-              <label class="btn btn-default text-center">
+              <% } %>
+                <% if (varient.size.includes('L')) { %>
+                <label class="btn btn-default text-center">
                 <input
                   type="radio"
                   name="color_option"
-                  id="color_option_b3"
+                  id="color_option<%=++i%>"
                   autocomplete="off"
                 />
                 <span class="text-xl">L</span>
                 <br />
                 Large
               </label>
-              <label class="btn btn-default text-center">
+                <% } %>
+                <% if (varient.size.includes('L')) { %>
+                <label class="btn btn-default text-center">
                 <input
                   type="radio"
                   name="color_option"
-                  id="color_option_b4"
+                  id="color_option<%=++i%>"
+                  autocomplete="off"
+                />
+                <span class="text-xl">L</span>
+                <br />
+                Large
+              </label>
+              <% } %>
+                <% if (varient.size.includes('XL')) { %>
+                <label class="btn btn-default text-center">
+                <input
+                  type="radio"
+                  name="color_option"
+                  id="color_option<%=++i%>"
                   autocomplete="off"
                 />
                 <span class="text-xl">XL</span>
                 <br />
                 Xtra-Large
               </label>
+                <% } %>
+                <% if (varient.size.includes('XXL')) { %>
+                <label class="btn btn-default text-center">
+                <input
+                  type="radio"
+                  name="color_option"
+                  id="color_option<%=++i%>"
+                  autocomplete="off"
+                />
+                <span class="text-xl">XXL</span>
+                <br />
+                Double-Xtra-Large
+              </label>
+                <% } %>
+                <% if (varient.size.includes('XXXL')) { %>
+                <label class="btn btn-default text-center">
+                <input
+                  type="radio"
+                  name="color_option"
+                  id="color_option<%=++i%>"
+                  autocomplete="off"
+                />
+                <span class="text-xl">XXL</span>
+                <br />
+                Triple-Xtra-Large
+              </label>
+                <% } %>
+                
+              
+              
+                
+              <% }) %>
+              
+              
             </div>
             <div class="bg-gray py-2 px-3 mt-4">
               <h2 class="mb-0">₹<%=product.price%></h2>

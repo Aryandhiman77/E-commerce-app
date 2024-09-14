@@ -5,6 +5,10 @@ const categorySchema = new mongoose.Schema ({
         unique:true,
         required:true
     },
+    category_image:{
+        type:String,
+        required:true
+    },
     category_url_slug:{
         type: String,
         unique:true,
@@ -17,7 +21,8 @@ const categorySchema = new mongoose.Schema ({
         type:String,
         enum:['active','inactive','block'],
         default:'active'
-    }
+    },
+    
 })
 
 const Category = mongoose.model('category',categorySchema)

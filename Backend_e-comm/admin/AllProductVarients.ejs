@@ -1,0 +1,448 @@
+<%-include('../partials/header')%> 
+<%-include('../partials/navbar')%>
+<%-include('../partials/sidebar')%>
+<div class="content-wrapper" style="min-height: 1604.62px">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Product Varients</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+            <li class="breadcrumb-item">
+              <a href="/productsDetail">E-commerce</a>
+            </li>
+            <li class="breadcrumb-item active">All Product Varients</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Product Varients</h3>
+        <div class="card-tools">
+            <button class="btn btn-sm btn-success mx-2" onclick="addNewVarient()">Add new varient</button>
+          <button
+            type="button"
+            class="btn btn-tool"
+            data-card-widget="card-refresh"
+            id="reloadData"
+            onclick="location.reload()"
+            data-source-selector="#card-refresh-content"
+            data-load-on-init="false"
+            title="refresh"
+          >
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+
+          <div class="row mt-4 d-flex justify-content-center">
+            <% if (varients.length>0) { %>
+              <% varients.forEach((varient,i) => { %>
+                <!-- card start -->
+                  
+                <div class="card col-md-3 mx-3" style="width: 20rem;">
+                  <div class="ribbon-wrapper ribbon-lg">
+                    <div class="ribbon bg-danger text-sm">
+                        75% off
+                    </div>
+                    </div>
+                  <div id="<%=i%>carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                      <div class="carousel-inner">
+                          <div class="carousel-item active" data-bs-interval="8000">
+                              <img src="<%=varient.varient_images[0]%>" name="<%=i%>renderedImage" height="350" width="400" class="d-block w-100" alt="...">
+                            </div>
+                          <% varient.varient_images.forEach((image) => { %>
+                              <% if (image !== 'defaultProductImage/defaultProduct.jpg' && image!==varient.varient_images[0]) { %>
+                              <div class="carousel-item" data-bs-interval="8000">
+                                      <img src="<%=image%>" height="350" width="400" class="d-block w-100" alt="..." name="<%=i%>renderedImage">
+                                </div>
+                                <% } %>
+                          <% }) %>
+      
+                      </div>
+                      <button class="carousel-control-prev" type="button" data-bs-target="#<%=i%>carouselExampleInterval" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                      </button>
+                      <button class="carousel-control-next" type="button" data-bs-target="#<%=i%>carouselExampleInterval" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                      </button>
+                    </div>
+                    <hr>
+                    <div class="card-body p-2">
+
+
+                        <label class="btn btn-default text-center active">
+                         <span id="<%=i%>var_name"><%=varient.varient_name%></span> 
+                          <% if (varient.color) { %>
+                            <input class="rounded-circle  border-0 ml-2" id="<%=i%>var_color" data-color="<%=varient.color%>" style='height: 30px; width: 30px; 
+                            background:<%=varient.color%>' disabled>
+                          </input>
+                          <% } %>
+                        </label>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          <label class="btn btn-default text-center active">
+                          <input type="radio" name="color_option" id="color_option_b1" autocomplete="off">
+                          <span class="text-xl" id="<%=i%>var_size"><%=varient.size%></span>
+                          <br>
+                          Small
+                          </label>
+                          <label class="btn btn-default text-center">
+                          <input type="radio" name="color_option" id="color_option_b2" autocomplete="off">
+                          <span class="text-xl"><%=varient.size%></span>
+                          <br>
+                          Medium
+                          </label>
+                          <label class="btn btn-default text-center">
+                          <input type="radio" name="color_option" id="color_option_b3" autocomplete="off">
+                          <span class="text-xl"><%=varient.size%></span>
+                          <br>
+                          Large
+                          </label>
+                          <label class="btn btn-default text-center">
+                          <input type="radio" name="color_option" id="color_option_b4" autocomplete="off">
+                          <span class="text-xl"><%=varient.size%></span>
+                          <br>
+                          Xtra-Large
+                          </label>
+                          </div>
+                        <p><span class="fs-4">₹</span><span class="fs-1" id="<%=i%>var_price"><%=varient.price%></span></p>
+                        <p><b>Stock  :</b><span id="<%=i%>var_stock"><%=varient.stock_quantity%></span></p>
+                      
+
+                  </div>
+                  <div class="card-footer text-muted">
+                  </button>
+                  
+                      <button class="btn btn-sm btn-success" value="<%=varient._id%>" onclick="getAndSetDataIntoForm(event,`<%=i%>`)">
+                          <i class="fas fa-pencil-alt"></i>
+                          Edit
+                      </button>
+                      <button class="btn btn-sm btn-danger" value="<%=varient._id%>" onclick="deleteVarient(event,`<%=i%>`)">
+                          <i class="fas fa-trash" ></i>
+                          Delete
+                      </button>
+                    </div>
+                </div>
+                  <!-- card end -->
+                    <!-- Modal -->
+                     <button data-bs-toggle="modal"  data-bs-target="#Modal<%=i%>" class="d-none"
+                    id="modelpopup<%=i%>"></button>
+                    <div class="modal fade p-0" id="Modal<%=i%>" tabindex="-1" aria-labelledby="Modal<%=i%>"
+                      aria-hidden="true" >
+                      <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+                      <div class="modal-dialog modal-xl" style="margin: 0;">
+                        <div class="modal-content" style="width: 100vw;">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="<%=i%>exampleModalLabel">
+                              Update Product
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                              aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body" style="width: 100vw;">
+                            <div class="row">
+                              <div class="col-md-12">
+                                    <b class="mb-2">Edit Gallery</b>
+                                    <div class="container-sm mt-2 d-flex ml-0 mr-5 mb-3">
+                                      <% for( let j = 0; j <= 3; j++ ) { %>
+                                        <div class="productimage mx-2">
+                                          <div class="btn btn-sm btn-danger" style="position: absolute;" onclick="updateVarientGallery(event)">&cross;</div>
+                                          <label for="<%=i%>inputImage<%=j%>">
+                                            <img class="border bordered" width="250" height="180"
+                                              src="../defaultProductImage/defaultProduct.jpg" id="<%=i%>previewimage<%=j%>" name="<%=i%>previewInputimage" alt="">
+                                          </label>
+                                          <input type="file" id="<%=i%>inputImage<%=j%>" onchange="previewImage(event,`<%=i%>`,`<%=j%>`)" class="d-none" name="productImages">
+                                        </div>
+                                      <% } %>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                      <label for="color">Color</label>
+                                      <!-- <input class="mx-2" type="radio" value="color" id="SelectColor" name="nameorcolor" checked> -->
+                                      <input type="color" value="<%=varient.color%>" id="<%=i%>color" name="color" class="form-control" >
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                      <label for="<%=i%>varient_name">Variant Name</label>
+                                      <input type="text" id="<%=i%>varient_name" name="<%=i%>varient_name" class="form-control" />
+                                    </div>
+                                    <div class="row">
+                                      <div class="form-group col-md-2">
+                                          <label for="<%=i%>size">Size</label>
+                                          <input class="mx-2" type="radio" value="size" name="sizeWithUnitOrFixedUnit">
+                                          
+                                          <input type="number" id="<%=i%>size" name="<%=i%>size" class="form-control"/>
+                                      </div>
+                                        <div class="form-group col-md-1">
+                                          <label for="<%=i%>unit">Units</label>
+                                        
+                                          <select id="<%=i%>unit" class="form-control custom-select" name="<%=i%>unit">
+                                            <% lengthSize.forEach(unit => { %>
+                                              <option value="<%=unit%>"><%=unit%></option>
+                                          <% }) %>
+                                          </select>
+                                          
+                                        </div>
+                                        <div class="form-group">
+                                          <b>or</b>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                          <label for="<%=i%>fixedUnitSize">Fixed size units</label>
+                                          <input class="mx-2" type="radio" value="fixedsizeunit" name="sizeWithUnitOrFixedUnit" checked>
+                                          
+                                          <select id="<%=i%>fixedUnitSize" value="<%=i%>fixedUnitSize"  class="form-control custom-select" name="fixedUnitSize">
+                                            <% sizeUnits.forEach(unit => { %>
+                                              <option><%=unit%></option>
+                                          <% }) %>
+                                          </select>
+                                        </div>
+                                       <div class="row">
+                                        <div class="form-group col-md-2">
+                                          <label for="<%=i%>price">Price</label>
+                                          <input type="number" id="<%=i%>price" name="<%=i%>price" class="form-control" />
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                          <label for="<%=i%>stock_quantity">Stock quantity</label>
+                                          <input type="number" id="<%=i%>stock_quantity" name="<%=i%>stock_quantity" class="form-control" />
+                                        </div>
+                                      </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                              Close
+                            </button>
+                            <button type="button" id="<%=i%>saveChanges" value="<%=varient._id%>"
+                              onclick="saveVarientUpdate(event,`<%=i%>`)" class="btn btn-primary">
+                              Save changes
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+              <% }) %>
+      <!-- for each loop  -->
+            <% } else { %>
+              <div class="d-flex justify-content-center">
+                <img width="500" src="https://img.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg?w=1060&t=st=1725641118~exp=1725641718~hmac=0c5df2c3f91212845830822bb8a62b3abd783c22bfca7ffdc4b79881a234a604" alt="loading..">
+              </div>
+
+            <% } %>
+        
+        </div>
+      </div>
+    </div>
+
+</section>
+</div>
+<%-include('../partials/footer')%>
+<script>
+   const previewImage = (event,i,j)=>{
+            console.log('previewing images')
+            let imageFile = event.target.files[0]; // input change events
+            let imageBlobURL = URL.createObjectURL(imageFile);
+            document.getElementById(`${i}previewimage${j}`).src=imageBlobURL     
+}
+  let token = document.cookie;
+  token = token.replace("token=", "");
+  token = token.replace("%20", " ");
+  const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                  },
+  });
+    const addNewVarient = ()=>{
+        let urlId = new URL(location.href).search;
+        location.href = `/admin-addVarient${urlId}`
+    }
+
+      const deleteVarient = async (event, i) => {
+      const varientId = event.target.value;
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: "btn btn-success",
+              cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: true
+          });
+          swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+
+          console.log('deleting', event.target.value)
+          const resp = await fetch(`http://localhost:8000/api/v1/varient/${varientId}`,{
+        method:'DELETE',
+        headers:{
+          authorization:token
+        }
+       })
+          const result = await resp.json();
+          if(result.success){
+            document.getElementById('reloadData').classList.add('text-danger')
+            document.getElementById('reloadData').classList.add('spinner-grow')
+            $(document).ready(function () {
+              swalWithBootstrapButtons.fire({
+                title: "Deleted!",
+                text: "Your varient has been deleted.",
+                icon: "success"
+              });
+            }); 
+          }
+            } else if (
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                text: "Your varient is safe :)",
+                icon: "error"
+              });
+            }
+            else{
+              console.log(result)
+            Toast.fire({
+              icon: "error",
+              title: result.error,
+            });
+          }
+          });
+        }
+       
+        const getAndSetDataIntoForm = async(event,i)=>{
+            document.getElementById(`modelpopup${i}`).click()
+          let var_name=document.getElementById(`${i}var_name`).innerHTML;
+          let var_color=document.getElementById(`${i}var_color`)===null?"":document.getElementById(`${i}var_color`).dataset.color
+
+          let var_size=document.getElementById(`${i}var_size`).innerHTML;
+          console.log(var_size)
+          let var_fixSize=document.getElementById(`${i}fixedUnitSize`).value;
+          console.log(var_fixSize)
+
+          let var_price=document.getElementById(`${i}var_price`).innerHTML;
+          let var_stock=document.getElementById(`${i}var_stock`).innerHTML;
+          let images = document.getElementsByName(`${i}renderedImage`);
+          images.forEach((image,j)=>{
+            document.getElementById(`${i}previewimage${j}`).src=image.src
+          })
+          // setting old data into form for updation
+          document.getElementById(`${i}varient_name`).value = var_name
+          document.getElementById(`${i}size`).value = var_size
+          document.getElementById(`${i}fixedUnitSize`).value=var_size;
+          document.getElementById(`${i}price`).value = var_price
+          document.getElementById(`${i}stock_quantity`).value = var_stock
+          if(var_size){
+            console.log('yess')
+          }
+        } 
+
+        const saveVarientUpdate = async(event,i )=>{
+        
+          const formdata = new FormData();
+          const varientImages = new Formdata();
+          const sizeWithUnitOrFixedUnit = document.querySelector('input[name="sizeWithUnitOrFixedUnit"]:checked').value;
+
+          let var_name=document.getElementById(`${i}varient_name`).value;
+          let var_color=document.getElementById(`${i}color`).value;
+          let var_size=document.getElementById(`${i}size`).value;
+          let var_unit=document.getElementById(`${i}unit`).value;
+          let var_fixSize=document.getElementById(`${i}fixedUnitSize`).value;
+          let var_price=document.getElementById(`${i}price`).value;
+          let var_stock=document.getElementById(`${i}stock_quantity`).value;
+
+          let img1 = document.getElementsByName(`${i}inputImage0`);
+          let img2 = document.getElementsByName(`${i}inputImage1`);
+          let img3 = document.getElementsByName(`${i}inputImage2`);
+
+          let imagesArr =[];
+            for (let j = 0; j <=3;j++) { 
+              imagesArr.push(document.getElementById(`${i}inputImage${j}`).files[0]);
+            }
+            imagesArr = imagesArr.filter(image => image!==undefined )
+            imagesArr.forEach((image)=>{
+              varientImages.append('productImages',image);
+            })
+
+
+          formdata.append('varient_name',var_name)
+          formdata.append('color',var_color)
+          
+          if(sizeWithUnitOrFixedUnit){
+            formdata.append('size',var_fixSize)
+          }else{
+            formdata.append('size',var_size)
+            formdata.append('unit',var_unit)
+          }
+          formdata.append('price',var_price)
+          formdata.append('stock_quantity',var_stock)
+          const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                  },
+                });
+          const UpdateResp =await fetch (`http://localhost:8000/api/v1/varient/${event.target.value}`,{
+            method:'PUT',
+            headers:{
+              authorization:token
+            },
+            body:formdata
+          }) 
+          
+          const result = await UpdateResp.json();
+           if (result.success) {
+              $(document).ready(async function () {
+                const sendImages = await fetch (`http://localhost:8000/api/v1/varient/updateImages/${event.target.value}`,{
+            method:'PUT',
+            headers:{
+              authorization:token
+            },
+            body:varientImages
+          })
+          sendImages?
+              Toast.fire({
+                  icon: "success",
+                  title: result.message + "<br><a href='/productsDetail' class='text-light'><button class='btn btn-success mt-2'>View product</button></a>",
+                }): console.log(result)
+              Toast.fire({
+                  icon: "error",
+                  title: result.error,
+                });
+              });
+            } else {
+              console.log(result)
+              Toast.fire({
+                  icon: "error",
+                  title: result.error,
+                });
+          }
+        }
+      
+</script>

@@ -3,7 +3,6 @@ import Login from './Components/Login'
 import Navbar from './Components/Navbar'
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import Signup from './Components/Signup'
-import Main_panel from './AdminPanel/Main_panel'
 import Home from './Components/Home'
 import About from './Components/About'
 function App() {
@@ -17,7 +16,6 @@ const login = false
           <Route path='/' element={<Home/>}></Route>
           <Route path='/about' element={<About/>}></Route>
           <Route path='/register' element={<Signup/>}></Route>
-          <Route path='/admin' element={<Main_panel/>}></Route>
         </Routes>  
       </Router> 
     </>

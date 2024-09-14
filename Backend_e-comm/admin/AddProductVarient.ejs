@@ -1,0 +1,193 @@
+<%-include('../partials/header')%>
+  <%-include('../partials/navbar')%>
+    <%-include('../partials/sidebar')%>
+      <div class="content-wrapper">
+          <!-- <p id="show-popup" class="d-none"></p> -->
+        <section class="content-header">
+          <div class="container-fluid">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>Add Product varient</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                  <li class="breadcrumb-item active">Add Product</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <section class="content center mx-3">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Add Varient</h3>
+                </div>
+                <div class="card-body" style="display: block">
+                  <h5>Upload Gallery</h5>
+                  <div class="container-sm mt-2 d-flex ml-0 mr-5 mb-3">
+                    <% for( let i = 1; i <= 4; i++ ) { %>
+                      <div class="productimage mx-2">
+                        <label for="<%=i%>inputImage">
+                          <img class="border bordered" width="250" height="180"
+                            src="../adminUtilities/defaultProductForm.png" id="<%=i%>previewimage" alt="">
+                        </label>
+                        <input type="file" id="<%=i%>inputImage" onchange="previewImage(event,`<%=i%>`)" class="d-none" name="productImages">
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="color">Color</label>
+                    <input class="mx-2" type="radio" value="color" id="SelectColor" name="nameorcolor" checked>
+                    <input type="color" id="color" name="color" class="form-control" value="#ff0000">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="varient_name">Variant Name</label>
+                    <input class="mx-2" type="radio" value="varient_name" id="SelectName" name="nameorcolor" placeholder="either color or varient name can be selected.">
+                    <input type="text" id="varient_name" name="varient_name" class="form-control" />
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="size">Size</label>
+                        <input class="mx-2" value="size" type="radio" id="SelectSize" name="sizeWithUnitOrFixedUnit">
+                        <input type="number" id="size" name="size" class="form-control" />
+                    </div>
+                      <div class="form-group col-md-1">
+                        <label for="unit">Units</label>
+                      
+                        <select id="unit" class="form-control custom-select" name="unit">
+                            <% lengthSize.forEach(unit => { %>
+                                <option value="<%=unit%>"><%=unit%></option>
+                            <% }) %>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <b>or</b>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="fixedUnitSize">Fixed size units</label>
+                        <input class="mx-2" type="radio" value="fixedUnitSize" name="sizeWithUnitOrFixedUnit" checked>
+                      
+                        <select id="fixedUnitSize" class="form-control custom-select" name="fixedUnitSize">
+                            <% sizeUnits.forEach(unit => { %>
+                                <option><%=unit%></option>
+                            <% }) %>
+                        </select>
+                      </div>
+                     <div class="row">
+                      <div class="form-group col-md-2">
+                        <label for="price">Price</label>
+                        <input type="number" id="price" name="price" class="form-control" />
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="stock_quantity">Stock quantity</label>
+                        <input type="number" id="stock_quantity" name="stock_quantity" class="form-control" />
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" id="submit" class="btn btn-danger">Save Varient</button>
+                  </form>
+                </div>
+              </div>
+        </section>
+      </div>
+
+      <%-include('../partials/footer')%>
+
+        <script>
+          const previewImage = (event,i)=>{
+            console.log('previewing images')
+              const imageFile = document.getElementById(`${i}inputImage`).files[0]
+              const imageBlobURL = URL.createObjectURL(imageFile);
+              document.getElementById(`${i}previewimage`).src=imageBlobURL;
+          }
+          document.getElementById('submit').addEventListener('click', async (e) => {
+            const formdata = new FormData;
+
+            // get selections
+            const nameorcolor = document.querySelector('input[name="nameorcolor"]:checked').value;
+            const sizeWithUnitOrFixedUnit = document.querySelector('input[name="sizeWithUnitOrFixedUnit"]:checked').value;
+            // --XGET-SELECTIONSX--
+
+            const nameorcolorValue = document.querySelector(`#${nameorcolor}`).value;
+            if(nameorcolor=='color'){
+              formdata.append('color',nameorcolorValue)
+            }else{
+              formdata.append('name',nameorcolorValue)
+            }
+            const sizeWithUnitOrFixedUnitValue = document.querySelector(`#${sizeWithUnitOrFixedUnit}`).value;
+
+            if(sizeWithUnitOrFixedUnit==='size'){
+              const size = sizeWithUnitOrFixedUnitValue
+              const unit = document.querySelector('#unit').value; 
+              formdata.append('sizewithunit',size)
+              formdata.append('unit',unit)
+            }else{
+              const size = sizeWithUnitOrFixedUnitValue
+              formdata.append('size',size)
+            }
+
+            const price = document.querySelector('#price').value
+            const stock_quantity = document.querySelector('#stock_quantity').value
+            formdata.append('price',price)
+            formdata.append('stock_quantity',stock_quantity)
+  
+            let imagesArr =[];
+            for (let i = 1; i <=4;i++) { 
+              imagesArr.push(document.getElementById(`${i}inputImage`).files[0]);
+            }
+            imagesArr = imagesArr.filter(image => image!==undefined )
+            imagesArr.forEach((image)=>{
+              formdata.append('productImages',image);
+            })
+
+            const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                  },
+                });
+            
+
+        
+
+            let token = document.cookie;
+            token = token.replace("token=", "");
+            token = token.replace("%20", " ");
+            const product_id = new URL(location.href).search
+            const resp = await fetch(`http://localhost:8000/api/v1/varient${product_id}`, {
+              method: "POST",
+              headers: {
+                authorization: token,
+              },
+              body: formdata
+            })
+            const result = await resp.json();
+            
+            if (result.success) {
+              $(document).ready(function () {
+                Toast.fire({
+                  icon: "success",
+                  title: result.message + "<br><a href='/productsDetail' class='text-light'><button class='btn btn-success mt-2'>View product</button></a>",
+                });
+              });
+            } else {
+              Toast.fire({
+                  icon: "error",
+                  title: result.error,
+                });
+          }
+        }
+          )
+        
+        </script>

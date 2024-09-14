@@ -6,9 +6,12 @@ const validateAddProduct =[
         body('stock_quantity',"Stock quantity must be 1-999.").trim().isNumeric().isLength({max:3})
 ]
 const validateProductVarient = [
-        body('color','max 20 character can be there.').trim().isLength({max:20}),
-        body('size').trim().isLength({max:20}),
-        body('price','price must be required').trim().notEmpty().isLength({max:8}),
+        body('color','Please select a valid color.').trim().isHexColor().optional(),
+        body('name','Name can contain maximum of 50 characters.').trim().isLength({max:50}).optional(),
+        body('size','size must be entered properly.').trim().isLength({max:25}).optional(),
+        body('sizewithunit','size must be entered properly.').isNumeric().trim().isLength({max:4}).optional(),
+        body('unit','unit must be entered properly.').isAlphanumeric('az-AZ').trim().isLength({max:2}).optional(),
+        body('price','price must be required').trim().notEmpty().isNumeric().isLength({max:8}),
         body('stock_quantity',"Stock quantity must be 1-999.").trim().isNumeric().isLength({max:3})
 ]
 module.exports = {validateAddProduct,validateProductVarient}

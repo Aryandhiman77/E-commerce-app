@@ -5,7 +5,6 @@
           <!-- <p id="show-popup" class="d-none"></p> -->
         <section class="content-header">
           <div class="container-fluid">
-          <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
                 <h1>Add Product</h1>
@@ -13,6 +12,7 @@
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                  <li class="breadcrumb-item"><a href="/productsDetail">Products</a></li>
                   <li class="breadcrumb-item active">Add Product</li>
                 </ol>
               </div>
@@ -50,9 +50,11 @@
                         <label for="category_name">Category</label>
                         <select id="category_name" class="form-control custom-select" name="category_name">
                           <% categories.forEach(category=> { %>
-                            <option value="<%=category.category_name%>">
-                              <%=category.category_name%>
-                            </option>
+                            <% if (category.cat_status=='active') { %>
+                              <option value="<%=category.category_name%>">
+                                <%=category.category_name%>
+                              </option>
+                            <% } %>
                             <% }) %>
                         </select>
                     </div>
@@ -71,7 +73,7 @@
                         <img class="border border-info" width="400" height="250"
                           src="../adminUtilities/defaultProductForm.png" id="previewImage" alt="">
                       </label>
-                      <input type="file" id="inputImage" class="d-none" name="productSingleImage">
+                      <input type="file" id="inputImage" oninput="previewImage(event)" class="d-none" name="productSingleImage">
                     </div>
                   </div>
                   <button type="submit" id="submit" class="btn btn-danger">Save Product</button>
@@ -84,6 +86,11 @@
       <%-include('../partials/footer')%>
 
         <script>
+           const previewImage = (event)=>{
+            let imageFile = event.target.files[0]; // input change events
+            let imageBlobURL = URL.createObjectURL(imageFile);
+            document.getElementById(`previewImage`).src=imageBlobURL     
+}
           // const formdata
           document.getElementById('submit').addEventListener('click', async (e) => {
             const product_name = document.querySelector('#product_name').value

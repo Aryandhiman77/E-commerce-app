@@ -20,14 +20,19 @@ const MAX_FILE_SIZE = 1024* 1024; // 1MB
     },
     fileFilter:(req,file,cb)=>{
       const isValid = FILE_TYPE_MAP[file.mimetype]
-      isValid?cb(null, true):cb(new multer.MulterError('Please upload valid image.'), false);
+      //if(file.mimetype==='image/png'||file.mimetype==='image/jpg'||file.mimetype==='image/jpeg'){
+      if(isValid){
+        cb(null, true)
+      }else{
+        cb(new multer.MulterError('Please upload jpg, jpeg, png images only.',file.mimetype), false);
+      }
     }
   })
 
 const handleSingleImageUpload = (req,res,next)=>{
   upload.single('productSingleImage')(req,res,err=>{
     if(err instanceof multer.MulterError){
-      return res.json({error:err.message,field:err.field})
+      return res.json({error:err.code,field:err.field})
     }
     next();
   })

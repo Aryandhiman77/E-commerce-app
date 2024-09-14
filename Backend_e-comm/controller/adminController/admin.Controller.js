@@ -127,6 +127,7 @@ const renderViewProduct =async (req,res)=>{
         }
     })
     const result = await resp.json()
+    console.log(result)
     if(result.success){
             res.render('ViewProduct',{path:null,product:result.product})
     }else{
@@ -146,6 +147,7 @@ const renderAddProduct = async(req,res)=>{
         }
     })
     const result = await resp.json()
+    console.log(result)
     if(result.success){
         res.render('AddProduct',{path:'/admin-addProduct',categories:result.categories})
     }else{
@@ -192,5 +194,127 @@ const renderCategories = async(req,res)=>{
         }
 
 }
+const renderOrders = (req,res)=>{   
+    res.render('AllOrders',{path:'/ordersDetail'})
+}
+const renderProductVarients =async ( req,res)=>{
+    const sizeUnits = [
+        // Clothing Sizes
+        'none',
+        'XS',    // Extra Small
+        'S',     // Small
+        'M',     // Medium
+        'L',     // Large
+        'XL',    // Extra Large
+        'XXL',   // Double Extra Large
+        'XXXL',  // Triple Extra Large
+        
+        // Shoe Sizes
+        'US-Shoe Size',    // US 
+        'EU-European Shoe Size',    // 
+        'UK-UK Shoe Size',    // 
+        
+        // Numeric Sizes
+        '0', '2', '4','5', '6','7','8','9','10', '12', '14', '16', // Common numeric sizes for women's clothing
+        '28', '30', '32', '34', '36', '38', '40',        // Common numeric sizes for men's pants
+    
+        // Clothing/Accessories
+        'One Size',       // Universal size for items like hats, scarves
+        'Free Size',      // Typically used interchangeably with "One Size"
+        'Plus Size',      // Sizes larger than XL
+  
+      ];
+      const lengthSize =[
+         // Length/Height
+         'in',    // Inches (e.g., for pants length, TV size)
+         'cm',    // Centimeters (e.g., for height, waist size)
+         
+         // Weight
+         'g',     // Grams
+         'kg',    // Kilograms
+         'lb',    // Pounds
+         
+         // Volume
+         'ml',    // Milliliters (e.g., for liquids)
+         'l',     // Liters
+         
+         // Dimensions (for items like furniture, electronics, etc.)
+         'mm',    // Millimeters
+         'cm',    // Centimeters
+         'm',     // Meters
+         'ft',    // Feet
+         'in',    // Inches
+         
+         // Capacity
+         'GB',    // Gigabytes (e.g., for storage devices)
+         'TB',    // Terabytes
+      ]
+    const token = req.cookies.token
+    const resp = await fetch(`http://localhost:8000/api/v1/varient/allVarients/${req.query.id}`,{
+        method:"GET",
+        headers:{
+            'Content-type':'application/json',
+            authorization:token,
+        }
+    })
+    const data = await resp.json();
 
-module.exports = {renderIndex,renderSignup,renderLogin,handleSignup,handleLogin,handleLogout,renderProducts,renderAddProduct,updateProduct,renderViewProduct,renderAddCategory,renderCategories};
+    res.render('AllProductVarients',{path:'/productVarients',varients:data.varients,sizeUnits,lengthSize})
+}   
+const renderAddVarient =async ( req,res)=>{
+    const sizeUnits = [
+        // Clothing Sizes
+        'none',
+        'XS',    // Extra Small
+        'S',     // Small
+        'M',     // Medium
+        'L',     // Large
+        'XL',    // Extra Large
+        'XXL',   // Double Extra Large
+        'XXXL',  // Triple Extra Large
+        
+        // Shoe Sizes
+        'US-Shoe Size',    // US 
+        'EU-European Shoe Size',    // 
+        'UK-UK Shoe Size',    // 
+        
+        // Numeric Sizes
+        '0', '2', '4','5', '6','7','8','9','10', '12', '14', '16', // Common numeric sizes for women's clothing
+        '28', '30', '32', '34', '36', '38', '40',        // Common numeric sizes for men's pants
+    
+        // Clothing/Accessories
+        'One Size',       // Universal size for items like hats, scarves
+        'Free Size',      // Typically used interchangeably with "One Size"
+        'Plus Size',      // Sizes larger than XL
+  
+      ];
+      const lengthSize =[
+         // Length/Height
+         'in',    // Inches (e.g., for pants length, TV size)
+         'cm',    // Centimeters (e.g., for height, waist size)
+         
+         // Weight
+         'g',     // Grams
+         'kg',    // Kilograms
+         'lb',    // Pounds
+         
+         // Volume
+         'ml',    // Milliliters (e.g., for liquids)
+         'l',     // Liters
+         
+         // Dimensions (for items like furniture, electronics, etc.)
+         'mm',    // Millimeters
+         'cm',    // Centimeters
+         'm',     // Meters
+         'ft',    // Feet
+         'in',    // Inches
+         
+         // Capacity
+         'GB',    // Gigabytes (e.g., for storage devices)
+         'TB',    // Terabytes
+      ]
+      
+    res.render('AddProductVarient',{path:'/admin-addVarient',sizeUnits,lengthSize})
+}   
+
+module.exports = {renderIndex,renderSignup,renderLogin,handleSignup,handleLogin,handleLogout,renderProducts,renderAddProduct,updateProduct,renderViewProduct,renderAddCategory,renderCategories,renderProductVarients,renderAddVarient,renderOrders};

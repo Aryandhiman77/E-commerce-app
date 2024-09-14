@@ -47,28 +47,27 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
-                E-commerce
+                Products
                 <i class="fas fa-angle-left right"></i>
                 <span class="badge badge-info right">6</span>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="/productsDetail" class="nav-link <%=path==='/productsDetail'?'active':''%>">
+                  <i class="fab nav-icon"></i>
+                  <p>Manage Products</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="/admin-addProduct" class="nav-link <%=path==='/admin-addProduct'?'active':''%>">
                   <i class="fab nav-icon"></i>
                   <p>Add Product</p>
                 </a>
-              </li>
-              <li class="nav-item">
-                <a href="/productsDetail" class="nav-link <%=path==='/productsDetail'?'active':''%>">
-                  <i class="fab nav-icon"></i>
-                  <p>All Products Data</p>
-                </a>
-              </li>
-              
+              </li>  
             </ul>
           </li>
-          <li class="nav-item <%=path==='/admin-addCategory'?'menu-open':''%>">
+          <li class="nav-item <%=path==='/admin-addCategory' ||path==='/categoriesDetail' ?'menu-open':''%>">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-copy"></i>
               <p>
@@ -78,10 +77,10 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="/categoriesDetail" class="nav-link <%=path==='/categoriesDetail'?'active':''%> ">
                   <i class="fab nav-icon"></i>
-                  <p>All Category</p>
+                  <p>Manage Categories</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -90,10 +89,33 @@
                   <p>Add Category</p>
                 </a>
               </li>
-        
-              
             </ul>
           </li>
+          <li class="nav-item <%=path==='/admin-addCategory' ||path==='/categoriesDetail' ?'menu-open':''%>">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Orders
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-danger right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item ">
+                <a href="/ordersDetail" class="nav-link <%=path==='/ordersDetail'?'active':''%> ">
+                  <i class="fab nav-icon"></i>
+                  <p>Manage Orders</p>
+                </a>
+              </li>
+              <!-- <li class="nav-item">
+                <a href="/admin-addCategory" class="nav-link  <%=path==='/admin-addCategory'?'active':''%>">
+                  <i class="fab nav-icon"></i>
+                  <p>Add Category</p>
+                </a>
+              </li> -->
+            </ul>
+          </li>
+          
           <li class="nav-item">
             <a href="/admin-logout" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>

@@ -8,9 +8,12 @@ const productVarientSchema = new mongoose.Schema ({
         type:String,
     }],
     color:{
+        type: String, // hex validation already applied by express-validator
+        default:null
+    },
+    varient_name:{
         type: String,
-        unique:true,
-        required:true
+        default:null
     },
     size:{
         type: String,
