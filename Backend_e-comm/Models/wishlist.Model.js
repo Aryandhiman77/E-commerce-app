@@ -6,11 +6,11 @@ const wishlistSchema = new mongoose.Schema ({
     },
     product_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'product'
+        ref:'product',
     },
     product_varient_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'productVarient'
+        ref:'productVarient',
     },
     
 })

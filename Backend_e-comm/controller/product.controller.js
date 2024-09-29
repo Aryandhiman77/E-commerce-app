@@ -324,9 +324,41 @@ const getSingleProduct = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+const getSingleProductUsingSlug = async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const product_id = req.params.id;
+    !product_id && new Error("product id not found.");
+    
+    const product = await Product.findOne({product_url_slug:slug}).populate("category_id").populate('varients_ids');
+    product
+      ? res.status(200).json({
+          success: true,
+          message: "product found.",
+          product,
+        })
+      : res
+          .status(400)
+          .json({ success: false, error: "product does not exist." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({}).populate("category_id").populate('varients_ids')
+    const {isactive} = req.headers;
+    if(isactive){
+      const products = await Product.find({product_status:'active'}).populate("category_id").populate('varients_ids')
+      products
+        ? res.status(200).json({
+            success: true,
+            products,
+          })
+        : res
+            .status(400)
+            .json({ success: false, error: "No product found." });
+    }else{
+      const products = await Product.find({}).populate("category_id").populate('varients_ids')
     products
       ? res.status(200).json({
           success: true,
@@ -335,10 +367,40 @@ const getAllProducts = async (req, res) => {
       : res
           .status(400)
           .json({ success: false, error: "No product found." });
+    }
+    
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+const getAllProductsViaCategory = async (req, res) => {
+  try {
+    const {isactive} = req.headers;
+    if(isactive){
+      const category_slug = req.params.cat_slug;
+      const category = await Category.findOne({category_url_slug:category_slug});
+      if(category){
+        const products = await Product.find({category_id:category._id}).populate("category_id").populate('varients_ids');
+        return products
+        ? res.status(200).json({
+            success: true,
+            products,
+          })
+        : res
+            .status(400)
+            .json({ success: false, error: "No product found." });
+    }else{
+      res
+      .status(400)
+      .json({ success: false, error: "No slug found." });
+      }
+     
+    }
+    
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
 //todo 2 -> making changes in uploaded product_images array.
-module.exports = { addProduct, updateProduct, deleteProduct, getAllProducts,getSingleProduct,updateProductSingleImage,deleteGalleryImages };
+module.exports = { addProduct, updateProduct, deleteProduct, getAllProducts,getSingleProduct,getSingleProductUsingSlug,updateProductSingleImage,deleteGalleryImages,getAllProductsViaCategory};

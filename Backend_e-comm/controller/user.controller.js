@@ -98,6 +98,7 @@ const login = async (req, res) => {
       if (checkpass) {
     
         if(roleid===role.id){
+
           await User.findByIdAndUpdate(user._id, {
             $set: { status: "active" },
           });

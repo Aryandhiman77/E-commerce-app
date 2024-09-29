@@ -23,8 +23,31 @@ const getAllVarients =async (req,res)=>{
 
 const getSingleVarient = async(req,res )=>{
     try{
+        
         const varient_id = req.params.id;
-        const varient = await ProductVarient.findById(varient_id)
+        
+          const varient = await ProductVarient.findById(varient_id)
+          varient
+          ? res.status(200).json({
+              success: true,
+              message: "product varient found successfully.",
+              varient,
+            })
+          : res
+              .status(400)
+              .json({ success: false, error: "No product varient exists." });
+        
+    }catch(error){
+        res.status(500).json({ success: false, error: "Internal server error." });
+    }
+    
+    
+}
+const getAllVarientsViaSlug =async (req,res)=>{
+    try {
+      const slug = req.headers.slug;
+      if(slug){
+        const varient = await ProductVarient.findOne({varient_name:slug})
         varient
         ? res.status(200).json({
             success: true,
@@ -34,12 +57,13 @@ const getSingleVarient = async(req,res )=>{
         : res
             .status(400)
             .json({ success: false, error: "No product varient exists." });
-    }catch(error){
+      }
+    } catch (error) {
         res.status(500).json({ success: false, error: "Internal server error." });
     }
-    
-    
 }
+
+
 const createVarient = async(req,res )=>{
     if(req.files.length===0){
         return res.status(400).json({ success: false, error: "images must be required." });
@@ -300,4 +324,4 @@ const deleteVarient =async (req,res )=>{
       }
 }
 
-module.exports = {getAllVarients,createVarient,updateVarient,deleteVarient,getSingleVarient,updateVarientImages}
+module.exports = {getAllVarients,createVarient,updateVarient,deleteVarient,getSingleVarient,updateVarientImages,getAllVarientsViaSlug}

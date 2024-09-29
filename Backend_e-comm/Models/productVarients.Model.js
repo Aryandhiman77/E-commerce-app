@@ -6,7 +6,7 @@ const productVarientSchema = new mongoose.Schema ({
     },
     varient_images:[{
         type:String,
-    }],
+    }], 
     color:{
         type: String, // hex validation already applied by express-validator
         default:null

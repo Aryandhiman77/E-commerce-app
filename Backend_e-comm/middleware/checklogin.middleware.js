@@ -5,13 +5,13 @@ const checkLoginMiddleware = (req,res,next)=>{
     try{
         let token = req.headers.authorization;
         if(!token) {
-            return res.send({message:'Please provide a valid authorization token.'})
+            return res.send({message:'Please login first.'})
         }
         token = token.split(' ')[1];
         if(token){
             jwt.verify(token,jwtSecret,async(err,data)=>{
                 if(err){
-                    return res.send({message:'Please provide a valid authorization token.'})
+                    return res.send({message:'Please login first.'})
                 }
                 const user = await User.findById(data.id)
                 req.user = user._id.toString()

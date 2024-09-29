@@ -70,7 +70,7 @@ const updateCategory = async (req, res) => {
           dbfilepath = `/${req.file.path.split("/")[1]}/${req.file.path.split("/")[2]}`;
           let updateCategory=await Category.findByIdAndUpdate(category_id,{$set:{
             category_name,
-            category_url_slug,
+            category_url_slug:category_name.replaceAll(" ","-"),
             cat_status,
             category_image:dbfilepath
           }});
@@ -80,7 +80,7 @@ const updateCategory = async (req, res) => {
         }else{
           let updateCategory=await Category.findByIdAndUpdate(category_id,{$set:{
             category_name,
-            category_url_slug,
+            category_url_slug:category_name.replaceAll(" ","-"),
             cat_status
           }});
           updateCategory
@@ -134,12 +134,23 @@ const deleteCategory = async (req, res) => {
   };
 
   const getCategory = async(req,res)=>{
-    const categories = await Category.find();
-    if(categories.length>0){
-      res.status(200).json({ success: true, message: "categories found.",categories})
+    const {isactive} = req.headers;
+    if(isactive){
+      const categories = await Category.find({cat_status:'active'});
+      if(categories.length>0){
+        res.status(200).json({ success: true, message: "categories found.",categories})
+      }else{
+        res.status(200).json({ success: true, message: "No category found.",categories})
+      }
     }else{
-      res.status(200).json({ success: true, message: "No category found.",categories})
+      const categories = await Category.find({});
+      if(categories.length>0){
+        res.status(200).json({ success: true, message: "categories found.",categories})
+      }else{
+        res.status(200).json({ success: true, message: "No category found.",categories})
+      }
     }
+    
   }
   const getSingleCategory = async(req,res)=>{
     const category = await Category.findById(req.params.id);

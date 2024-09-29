@@ -5,6 +5,8 @@ const productRouter = require('./routes/product.routes')
 const categoryRouter = require('./routes/category.route')
 const productVarientsrouter = require('./routes/productVarient.route')
 const orderRouter = require('./routes/order.route')
+const cartRouter = require('./routes/cart.route');
+const wishlistRouter = require('./routes/wishlist.route');
 
 const cors = require('cors')
 const path = require('path');
@@ -27,6 +29,8 @@ app.use('/api/v1/product',productRouter)
 app.use('/api/v1/varient',productVarientsrouter)
 app.use('/api/v1/category',categoryRouter)
 app.use('/api/v1/order',orderRouter)
+app.use('/api/v1/cart',cartRouter)
+app.use('/api/v1/wishlist',wishlistRouter)
 
 app.set('view engine','ejs')
 app.set('views','admin')

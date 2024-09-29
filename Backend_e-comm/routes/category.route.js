@@ -10,10 +10,10 @@ const {handleSingleImageUpload} = require('../middleware/imageUpload.middleware'
 router.post('/',checkLoginMiddleware,handleSingleImageUpload,validateCategory,addCategory)//✅
 
 //? get all categories
-router.get('/',checkLoginMiddleware,getCategory)
+router.get('/',getCategory)
 
 //? get single category
-router.get('/:id',checkLoginMiddleware,getSingleCategory)
+router.get('/:id',getSingleCategory)
 
 //? update category
 router.put('/:id',checkLoginMiddleware,handleSingleImageUpload,validateCategory,updateCategory)//✅

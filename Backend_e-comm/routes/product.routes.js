@@ -1,9 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const checkLoginMiddleware = require("../middleware/checklogin.middleware");
-const { addProduct,updateProduct,deleteProduct,getSingleProduct, getAllProducts,updateProductSingleImage,deleteGalleryImages} = require("../controller/product.controller");
-const {validateAddProduct,validateProductVarient} = require("../validations/product.validation");
+const { addProduct,updateProduct,deleteProduct,getSingleProduct, getAllProducts,updateProductSingleImage,deleteGalleryImages,getSingleProductUsingSlug,getAllProductsViaCategory} = require("../controller/product.controller");
+const {validateAddProduct} = require("../validations/product.validation");
 const {handleSingleImageUpload,handleMultipleImagesUpload} = require('../middleware/imageUpload.middleware')
+
+//?Get using slug
+router.get("/detail/:slug",getSingleProductUsingSlug)//✅ use without login
+//? Get all product
+router.get("/",getAllProducts)//✅
+
+//? Get all products using category slug
+router.get("/catProducts/:cat_slug",getAllProductsViaCategory)//✅
+
 
 router.use(checkLoginMiddleware) // ! router level middleware
 
@@ -21,11 +30,13 @@ router.delete("/images/:id",deleteGalleryImages) //✅
 
 router.delete("/:id",deleteProduct) //✅
 
-//? Get all product
-router.get("/",getAllProducts)//✅
 
-//? Get all product
+
+//? Get single product -- for admin
+
 router.get("/:id",getSingleProduct)//✅
+
+
 
 
 module.exports = router;
