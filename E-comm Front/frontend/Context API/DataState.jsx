@@ -11,7 +11,7 @@ const DataState = (props) => {
     const [categoryProducts,setCategoryProducts]= useState([]);
     const [viewVarient,setViewVarient] = useState([]);
     const [varientImages,setVarientImages] = useState([]);
-    
+    const [itemQuantity,setitemQuantity] = useState([]);
 
     const Toast = Swal.mixin({
         toast: true,
@@ -161,6 +161,7 @@ const DataState = (props) => {
                 }
 
             });
+            setCartSubtotal(subtotal);
             result.getAllCarts.subtotal=subtotal;
             setCart(result.getAllCarts)
             

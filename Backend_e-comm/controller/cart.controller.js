@@ -32,6 +32,7 @@ const addItemToCart = async(req,res) =>{
             if(!isProductExists){
                 return res.status(400).json({ success: false, message: "product does not exists." });
             }
+            
         }
         if(product_varient_id){
             const isVarientExists = await ProductVarient.findById(product_varient_id);
@@ -39,7 +40,7 @@ const addItemToCart = async(req,res) =>{
                 return res.status(400).json({ success: false, message: "product varient does not exists." });
             }
         }
-        const details = {...req.body,user_id}
+        const details = {product_id,product_varient_id,user_id}
         const checkProductInCart = await Cart.find(details);
         if(checkProductInCart.length>0){
             return res.status(200).json({success:false,message:'product already exists in cart.',checkProductInCart});
@@ -59,7 +60,6 @@ const addItemToCart = async(req,res) =>{
       : res
           .status(400)
           .json({ success: false, message: "Cannot add to cart." });
-
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -76,13 +76,29 @@ const updateCart = async(req,res) =>{
             if(!isProductExists){
                 return res.status(400).json({ success: false, message: "product does not exists." });
             }
+            if(isProductExists.stock_quantity<=0){
+                return res.status(400).json({ success: false, message: "Out of Stock." });
+            }
+            if(quantity > isProductExists.stock_quantity){
+                return res.status(400).json({ success: false, message: "Quantity cannot exceed available stock." });
+            }
         }
         if(product_varient_id){
             const isVarientExists = await ProductVarient.findById(product_varient_id);
             if(!isVarientExists){
                 return res.status(400).json({ success: false, message: "product varient does not exists." });
             }
+            if(isVarientExists.stock_quantity<=0){
+                return res.status(400).json({ success: false, message: "Out of Stock." });
+            }
+            if(quantity > isVarientExists.stock_quantity){
+                return res.status(400).json({ success: false, message: "Quantity cannot exceed available stock." });
+            }
         }
+        if(quantity<1){
+            return res.status(400).json({ success: false, message: "Quantity cannot be less than 1." });
+        }
+
         const updateObj = {
             product_id:product_id?product_id:null,
             product_varient_id:product_varient_id?product_varient_id:null,
@@ -92,6 +108,7 @@ const updateCart = async(req,res) =>{
         updateItem
       ? res.status(200).json({
           success: true,
+          message: `Quantity changed to ${quantity} `,
           updateItem,
         })
       : res

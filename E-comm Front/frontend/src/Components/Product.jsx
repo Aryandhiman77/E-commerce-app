@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import dataContext from "../../Context API/dataContext";
+import {useDispatch} from 'react-redux'
 
 
-const previewer = ()=>{
 
-}
 
 const Product = (props) => {
   const cartIcon = useRef(null);
@@ -39,6 +38,7 @@ const Product = (props) => {
 
   const handleAddtoCart = (e) => {
     let productid = e.target.value;
+
     addToCart({ productid, quantity: 1 });
     getCart();
     StyleIconsCartAndWishlist();
@@ -50,6 +50,7 @@ const Product = (props) => {
     let productid = e.target.value;
     addToWishlist({productid})
     getWishlist();
+    
   }
   
   useEffect(()=>{

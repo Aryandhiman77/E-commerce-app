@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Cart = (props) => {
     const context = useContext(dataContext);
     const {cart,removeItemsFromCart,getCart} = context;
-    const [quantity,setQuantity] = useState(1);
+    
     const incrementQuantity = ()=>{
         if(quantity>=0){
             setQuantity(quantity+1);
@@ -14,7 +14,8 @@ const Cart = (props) => {
     }
     const decrementQuantity = ()=>{
         if(quantity>0){
-            setQuantity(--quantity);
+            setQuantity(quantity-1);
+            console.log(quantity)
         }
         
     }
