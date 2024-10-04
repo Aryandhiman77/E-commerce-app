@@ -1,30 +1,34 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import dataContext from "../../Context API/dataContext";
-import {useDispatch} from 'react-redux'
-
-
-
+import {useDispatch, useSelector} from 'react-redux'
+import { cartFetch,addItem } from "../Cart/cartSlice";
 
 const Product = (props) => {
+  const navigate = useNavigate();
+  const {FormatPrice} = useContext(dataContext);
   const cartIcon = useRef(null);
   const likeIcon = useRef(null);
   const context = useContext(dataContext);
-  const {cart, addToCart ,addToWishlist,wishlist,getCart,getWishlist,viewVarient} = context;
+  const {addToWishlist,wishlist,viewVarient} = context;
+  const data = useSelector(state=>state.cart)
+  let cart = data.data?.getAllCarts || [] ;
+  
+  const dispatch = useDispatch()
 
   const StyleIconsCartAndWishlist = ()=>{
-    if(cartIcon.current.style.color==="green"){
-        cartIcon.current.style.color=null;
-    }
     if(likeIcon.current.style.color==="red"){
         likeIcon.current.style.color=null;
     }
-    cart.map((item)=>{
+    cart = cart&&cart.filter((item)=>{
       if(item.product_id){
-        if(item.product_id._id===cartIcon.current.value){
-            cartIcon.current.style.color="green"
+      return item.product_id._id===cartIcon.current.value
       }
-        
+    })
+
+    cart&&cart.map((item)=>{
+      if(item.product_id){
+            cartIcon.current.style.color="green"
     }  
     })
     wishlist.map((wish)=>{
@@ -37,30 +41,30 @@ const Product = (props) => {
 }
 
   const handleAddtoCart = (e) => {
+    // dispatch(cartFetch());
     let productid = e.target.value;
-
-    addToCart({ productid, quantity: 1 });
-    getCart();
-    StyleIconsCartAndWishlist();
-    
+    dispatch(addItem({ product_id:productid, quantity: 1 })).then(()=>{
+      dispatch(cartFetch()).then(()=>{
+        navigate('/cart');
+      })
+    })
   };
   
 
   const handleaddToWishlist = (e)=>{
     let productid = e.target.value;
     addToWishlist({productid})
-    getWishlist();
     
   }
   
   useEffect(()=>{
     StyleIconsCartAndWishlist();
-  })
+  },[wishlist,cart])
 
  
   return (
     <>
-    
+
       <div
         className="products"
         style={{ display: "inline-flex", flexWrap: "wrap" }}
@@ -120,7 +124,7 @@ const Product = (props) => {
             </div>
             <div className="description" />
             <div className="product-price">
-              <span className="price">₹{props.product.price} </span>
+              <span className="price">{FormatPrice(props.product.price)} </span>
               <span className="price-before-discount">$ 800</span>
             </div>
           </div>

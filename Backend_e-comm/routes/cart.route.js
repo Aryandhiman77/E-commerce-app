@@ -8,8 +8,6 @@ router.use(checkLoginMiddleware) // ! router level middleware
 
 //! cart
 
-
-
 //?get cart
 router.get( '/',checkLoginMiddleware,getCart);
 

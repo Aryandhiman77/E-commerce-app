@@ -10,9 +10,18 @@ const orderShippingAdressSchema = new mongoose.Schema ({
         ref:'shippingAddress',
         required:true
     },
+    locality:{
+        type:String,
+        required:true
+    },
     full_address:{
         type:String,
         required:true
+    },
+    address_type:{
+        type:String,
+        enum:['home','work'],
+        default:'home',
     },
     state:{
         type:String,

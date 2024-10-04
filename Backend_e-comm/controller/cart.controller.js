@@ -1,3 +1,4 @@
+const { validationResult } = require('express-validator');
 const Cart = require('../Models/carts.Model.Model');
 const Product = require('../Models/products.Model');
 const ProductVarient = require('../Models/productVarients.Model');
@@ -21,16 +22,26 @@ const getCart = async(req,res) =>{
     }
 }
 const addItemToCart = async(req,res) =>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({success:false, message: errors.array()[0].msg }); // ! bad request
+    }
     try {
         const user_id = req.user;
         const {product_id,product_varient_id,quantity} = req.body;
         if(!product_id && !product_varient_id){
-            return res.status(400).json({ success: false, message: "product id / varient id not found." });
+            return res.status(400).json({ success: false, message: "Product id / varient id not found." });
         }
         if(product_id){
             const isProductExists = await Product.findById(product_id);
             if(!isProductExists){
-                return res.status(400).json({ success: false, message: "product does not exists." });
+                return res.status(400).json({ success: false, message: "Product does not exists." });
+            }
+            if(isProductExists.stock_quantity<=0){
+                return res.status(400).json({ success: false, message: "Out of Stock." });
+            }
+            if(quantity > isProductExists.stock_quantity){
+                return res.status(400).json({ success: false, message: "Quantity cannot exceed available stock." });
             }
             
         }
@@ -39,11 +50,17 @@ const addItemToCart = async(req,res) =>{
             if(!isVarientExists){
                 return res.status(400).json({ success: false, message: "product varient does not exists." });
             }
+            if(isVarientExists.stock_quantity<=0){
+                return res.status(400).json({ success: false, message: "Out of Stock." });
+            }
+            if(quantity > isVarientExists.stock_quantity){
+                return res.status(400).json({ success: false, message: "Quantity cannot exceed available stock." });
+            }
         }
         const details = {product_id,product_varient_id,user_id}
         const checkProductInCart = await Cart.find(details);
         if(checkProductInCart.length>0){
-            return res.status(200).json({success:false,message:'product already exists in cart.',checkProductInCart});
+            return res.status(200).json({success:false,message:'Product already exists in cart.',checkProductInCart});
         }
         const addItem = await Cart.create({
             user_id,
@@ -65,11 +82,15 @@ const addItemToCart = async(req,res) =>{
     }
 }
 const updateCart = async(req,res) =>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({success:false, message: errors.array()[0].msg }); // ! bad request
+    }
     try {
         const cart_id = req.params.cartid;
         const {product_id,product_varient_id,quantity} = req.body;
         if(!product_id && !product_varient_id){
-            return res.status(400).json({ success: false, message: "product id / varient id not found." });
+            return res.status(400).json({ success: false, message: "Product id / varient id not found." });
         }
         if(product_id){
             const isProductExists = await Product.findById(product_id);
@@ -86,7 +107,7 @@ const updateCart = async(req,res) =>{
         if(product_varient_id){
             const isVarientExists = await ProductVarient.findById(product_varient_id);
             if(!isVarientExists){
-                return res.status(400).json({ success: false, message: "product varient does not exists." });
+                return res.status(400).json({ success: false, message: "Product varient does not exists." });
             }
             if(isVarientExists.stock_quantity<=0){
                 return res.status(400).json({ success: false, message: "Out of Stock." });

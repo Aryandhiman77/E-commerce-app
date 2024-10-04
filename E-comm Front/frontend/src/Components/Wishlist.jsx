@@ -2,20 +2,20 @@ import React, { useContext, useEffect } from 'react'
 import dataContext from '../../Context API/dataContext'
 import Product from './Product'
 import { Link } from 'react-router-dom'
-
+import { addItem, cartFetch } from '../Cart/cartSlice'
+import { useDispatch } from 'react-redux'
 
 const Wishlist = (props) => {
-    const {getWishlist,wishlist,addToCart,removeItemsFromWishlist} = useContext(dataContext) 
+  const dispatch = useDispatch();
+    const {getWishlist,wishlist,removeItemsFromWishlist} = useContext(dataContext) 
     useEffect(()=>{
         getWishlist();
     },[])
     const handleAddtoCart=(e)=>{
-        
-        const details = {
-            productid:e.target.value,
-            quantity:1
-        }
-        addToCart(details)
+      let productid = e.target.value;
+      dispatch(addItem({ product_id:productid, quantity: 1 })).then(()=>{
+        dispatch(cartFetch());
+      })
     }
     const handleRemoveFromWishlist=(e)=>{
         console.log(e.target.value)

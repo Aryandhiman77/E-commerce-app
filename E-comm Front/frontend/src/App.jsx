@@ -1,5 +1,4 @@
 import "./App.css";
-import Header from "./Components/header";
 import Home from "./Components/Home";
 import Register from "./Components/Register";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -14,6 +13,10 @@ import Login from "./Components/login";
 import Wishlist from "./Components/Wishlist";
 import CategoryProducts from "./Components/CategoryProducts";
 import ProductVarient from "./Components/ProductVarient";
+import Header from "./Components/Header";
+import PageNotFound from "./Components/PageNotFound";
+import MyAccount from "./Components/MyAccount";
+import ManageAddress from "./Components/Account/ManageAddress";
 
 function App() {
   const host = import.meta.env.VITE_REACT_API_URL;
@@ -32,6 +35,11 @@ function App() {
       <Routes>
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
+        
+        <Route exact path="/my-account" element={<MyAccount />} />
+        <Route exact path="/my-account/profile" element={<MyAccount />} />
+        <Route exact path="/my-account/addresses" element={<MyAccount />} />
+
         <Route exact path="/" element={<Home host={host}  />} />
         <Route exact path="/product/:productSlug" element={<ProductDetail host={host} />} />
         <Route exact path="/cart" element={<Cart host={host} />} />
@@ -39,6 +47,7 @@ function App() {
         <Route exact path="/checkout" element={<Checkout host={host} />} />
         <Route exact path="/:category" element={<CategoryProducts host={host} />} />
         <Route path="/product/:productSlug/:varient" element={<ProductVarient host={host} />} />
+        <Route path="*" element={<PageNotFound/>} />
       </Routes>
       </DataState>
     </AuthState>

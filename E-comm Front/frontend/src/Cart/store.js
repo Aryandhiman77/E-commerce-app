@@ -1,5 +1,9 @@
 import  { configureStore} from '@reduxjs/toolkit';
-import { incrementQuantity } from './cartSlice';
+
+import cartReducer from './cartSlice'
 export const store = configureStore({
-    reducer:incrementQuantity
+    reducer:{
+        cart:cartReducer
+    }
+    
 })

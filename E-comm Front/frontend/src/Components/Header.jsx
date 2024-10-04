@@ -1,35 +1,44 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import dataContext from "../../Context API/dataContext";
 import AuthContext from "../../Context API/authContext";
 import Wishlist from "./Wishlist";
-// import Cart from './Cart';
+import { useDispatch, useSelector } from "react-redux";
+
+import { cartFetch, removeItem } from "../Cart/cartSlice";
+
 
 const Header = (props) => {
-  const context = useContext(dataContext);
-  const {
-    categories,
-    capitalizeFirstLetter,
-    getCart,
-    cart,
-    removeItemsFromCart,wishlist,getWishlist
-  } = context;
-  const {handleLogout} = useContext(AuthContext)
-  useEffect(() => {
-    getCart();
-    getWishlist();
-  }, []);
+
+  const dispatch = useDispatch();
+  const {FormatPrice,categories, wishlist, getWishlist} = useContext(dataContext)
+  let data = useSelector((state) => state.cart);
+  const subtotal = data.data && data.subtotal;
+  const { handleLogout } = useContext(AuthContext);
+
   const handleRemoveItem = (e) => {
-    removeItemsFromCart(e.target.value);
-    getCart();
+    dispatch(removeItem({ cartid: e.target.value })).then(() => {
+      dispatch(cartFetch()); // Fetch updated cart after item removal
+    });
   };
-  
+
+  const cart = data.data?.getAllCarts || [];
+  const cartlength = data.data?.getAllCarts?data.data.getAllCarts.length:'0';
+  useEffect(() => {
+    getWishlist(); // Fetch wishlist only once on mount
+    dispatch(cartFetch());
+  }, [dispatch]);
+
   return (
+    
     <>
+    
+    
       {/* ============================================== HEADER ============================================== */}
       <header className="header-style-1" style={{    position: "sticky",
       top: "0",
       zIndex: "5"}}>
+        {/* <h1>{selector}</h1> */}
         {/* ============================================== TOP MENU ============================================== */}
         <div className="top-bar animate-dropdown" >
           <div className="container">
@@ -37,7 +46,7 @@ const Header = (props) => {
               <div className="cnt-account">
                 <ul className="list-unstyled">
                   <li className="myaccount">
-                    <Link to="#">
+                    <Link to={'/my-account'}>
                       <span>My Account</span>
                     </Link>
                   </li>
@@ -48,8 +57,9 @@ const Header = (props) => {
                     </Link>
                   </li>
                   <li className="header_cart hidden-xs" style={{position:'relative'}}>
+                  
                     <Link to="/cart">
-                    <span style={{position:'absolute',right:"0",top:'-8px',background:'#fdd923',height:'15px',width:'15px',display:'flex',justifyContent:'center',alignItems:'center',borderRadius:'40px',color:'#106cab'}}>{cart.length}</span>
+                    <span style={{position:'absolute',right:"0",top:'-8px',background:'#fdd923',height:'15px',width:'15px',display:'flex',justifyContent:'center',alignItems:'center',borderRadius:'40px',color:'#106cab'}}>{cartlength}</span>
                       <span>My Cart</span>
                     </Link>
                   </li>
@@ -217,23 +227,24 @@ const Header = (props) => {
                     <div className="items-cart-inner">
                       <div className="basket">
                         <div className="basket-item-count">
-                          <span className="count">{cart.length}</span>
+                          <span className="count">{cartlength}</span>
                         </div>
                         <div className="total-price-basket">
                           {" "}
                           <span className="lbl">Shopping Cart</span>{" "}
-                          <span className="value">₹{cart.subtotal?cart.subtotal:0}</span>{" "}
+                          <span className="value">{FormatPrice(subtotal)}</span>{" "}
                         </div>
                       </div>
                     </div>
                   </Link>
-                  <ul className="dropdown-menu">
-                    {cart.map((item, i) => {
+                  <ul className="dropdown-menu" style={{width:'35rem'}} >
+                    <div style={{overflowY:'scroll',display:"flex",flexWrap:"wrap",maxHeight:'25rem'}}>
+                    {cart && cart.map((item, i) => {
                       return (
                         <li key={i}>
                           {!item.product_id && (
                             <div className="cart-item product-summary">
-                              <div className="row">
+                              <div className="row" style={{margin:0}}>
                                 <div className="col-xs-4">
                                   <div className="image">
                                     {" "}
@@ -256,8 +267,8 @@ const Header = (props) => {
                                     </Link>
                                   </h3>
                                   <div className="price">
-                                    ₹{item.product_varient_id.price?item.product_varient_id.price:0}
-                                  </div>
+                                    {FormatPrice(item.product_varient_id.price?item.product_varient_id.price:0)}{item.quantity>1&&<span style={{color:'red'}}>{' x '+item.quantity}</span>}
+                                  </div> 
                                 </div>
                                 <div className="col-xs-1 action">
                                   {" "}
@@ -281,7 +292,7 @@ const Header = (props) => {
                           )}
                           {!item.product_varient_id && (
                             <div className="cart-item product-summary">
-                              <div className="row">
+                              <div className="row" style={{margin:0}}>
                                 <div className="col-xs-4">
                                   <div className="image">
                                     {" "}
@@ -300,7 +311,8 @@ const Header = (props) => {
                                     </Link>
                                   </h3>
                                   <div className="price">
-                                    ₹{item.product_id.price?item.product_id.price:0}
+                                    {FormatPrice(item.product_id.price?item.product_id.price:0)}
+                                     {item.quantity>1&& <span style={{color:'red'}}>{' x '+item.quantity}</span>}
                                   </div>
                                 </div>
                                 <div className="col-xs-1 action">
@@ -308,15 +320,8 @@ const Header = (props) => {
                                   <button
                                     value={item._id}
                                     onClick={handleRemoveItem}
-                                    className="fa fa-trash"
-                                    style={{
-                                      borderRadius: "20px",
-                                      height: "3rem",
-                                      width: "3rem",
-                                      border: "1px",
-                                      color: "red",
-                                      fontSize: "1.5rem",
-                                    }}
+                                    className="fa fa-trash header-remove-btn"
+                                    
                                   ></button>
                                 </div>
                               </div>
@@ -326,12 +331,13 @@ const Header = (props) => {
                         </li>
                       );
                     })}
+                     </div>
                     <div className="clearfix" />
                     <div className="clearfix cart-total">
                       <div className="pull-right">
                         {" "}
                         <span className="text">
-                          Sub Total : ₹{cart.subtotal?cart.subtotal:0}
+                          Sub Total : {FormatPrice(subtotal)}
                         </span>
                         <span className="price"></span>{" "}
                       </div>
@@ -343,6 +349,7 @@ const Header = (props) => {
                         Checkout
                       </Link>{" "}
                     </div>
+                   
                   </ul>
                   {/* /.dropdown-menu*/}
                 </div>

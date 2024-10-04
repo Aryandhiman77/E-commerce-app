@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite ",
+    "build": "vite build ",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ideal-postcodes/address-finder": "^5.0.2",
     "@reduxjs/toolkit": "^2.2.7",
     "jquery": "^3.7.1",
     "react": "^18.3.1",

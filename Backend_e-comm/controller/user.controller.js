@@ -109,7 +109,11 @@ const login = async (req, res) => {
         jwt.sign(payload, jwtSecret, { expiresIn: "10h" }, (err, token) => {
           res
             .status(200)
-            .json({ success: true, message: "Login successfull.", token });
+            .json({ success: true, message: "Login successfull.",
+              user:user.full_name,
+              email:user.email,
+              phone_number:user.phone_number
+              ,token });
         });
       }else{
         res
@@ -130,4 +134,41 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const updateUser = async(req,res)=>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.json({ message: errors.array()[0].msg }); 
+  }
+  try {
+     const {email, username,mobile_no} = req.body;
+     const user_id = req.user;
+     if(!user_id){
+      res.status(400).json({ success: false, message: "Something went wrong." });
+     }
+     if(!username){
+      res.status(400).json({ success: false, message: "Username must be required." });
+     }
+     if(!email){
+      res.status(400).json({ success: false, message: "Email must be required." });
+     }
+     if(!mobile_no){
+      res.status(400).json({ success: false, message: "Mobile number must be required." });
+     }
+     const user = await User.findByIdAndUpdate(user_id,{
+      email, full_name:username,phone_number:mobile_no
+     })
+     
+     user
+     ? res.status(200).json({
+         success: true,
+         message:'Profile updated successfully.'
+       })
+     : res
+         .status(400)
+         .json({ success: false, message: "Cannot update profile details." });
+
+   } catch (error) {
+       res.status(500).json({ success: false, message: "Internal server error "+error.message });
+   }
+}
+module.exports = { register, login,updateUser };

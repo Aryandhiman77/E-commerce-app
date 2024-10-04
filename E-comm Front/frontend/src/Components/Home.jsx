@@ -3,15 +3,15 @@ import dataContext from '../../Context API/dataContext'
 import Product from './Product';
 import ReactCarousel from './Elements/Carousel'
 import Spinner from './Elements/Spinner';
-import ReactImageMagnify from 'react-image-magnify';
 import { Link } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import { cartFetch } from '../Cart/cartSlice';
 
 
 
 
 const Home = (props) => {
-  const likeIcon = useRef();
+  const dispatch = useDispatch();
   const context = useContext(dataContext);
   const {fetchProducts,products,fetchCategories,categories,capitalizeFirstLetter,getCart,getWishlist,} = context;
   const images = ['https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/6c3baa6acd6ab9bf.jpg','https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/6c3baa6acd6ab9bf.jpg','https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/6c3baa6acd6ab9bf.jpg']
@@ -21,9 +21,8 @@ const Home = (props) => {
   useEffect(()=>{
     fetchProducts();
     fetchCategories();
-    getCart();
+    dispatch(cartFetch());
     getWishlist();
-    // likeIcon.current.style.color="black";
   },[])
   return (
 products.length===0?<Spinner/>:
@@ -814,7 +813,7 @@ products.length===0?<Spinner/>:
  
          {products.map((product,i) => {
           
-           return <Product key={i} host={props.host} product={product}/>
+           return <Product key={i} host={props.host} product={product} />
          })}
         
           

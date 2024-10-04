@@ -31,3 +31,87 @@
     background: rgb(228, 228, 228);
     color: white;
 }
+.incDecIcons{
+    border-radius: 20px;
+    width: 4rem;
+    border: 1px;
+    font-size: 1.2rem;
+    position: absolute;
+    background: transparent;
+    color: black;
+}
+.alert{
+    font-size: 1.3rem;
+}
+
+.header-remove-btn{
+        border-radius: 20px;
+        height: 3rem;
+        width: 3rem;
+        border: 1px;
+        color: red;
+        font-size: 1.5rem;
+
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+.margin-left-1-2rem{
+    margin-left: 1.2rem;
+}
+.margin-left-4px{
+    margin-left: 4px;
+}
+.margin-left-2rem{
+    margin-left: 2rem;
+}
+.m-0{
+    margin: 0px;
+}
+.padding-4{
+    padding: 4px;
+}
+.color-gray{
+    color:#878787;
+}
+.header-color{
+    color:#167ed2;
+}
+.text-black{
+    color:black;
+}
+.display-flex{
+    display: flex;
+}
+.justify-center{
+    justify-content: center;
+}
+.align-center{
+    align-items: center;
+}
+.margin-bottom-2rem{
+    margin-bottom: 2rem;
+}
+.body-item > p>a>span{
+    color: black;
+    font-size: 1.5rem;
+}
+.body-item > p>a>span:hover{
+    color:#167ed2;
+}
+.mtop-2{
+    margin-top: 2rem;
+}
+.pt-1-2rem{
+    padding-top: 1.2rem;
+}
+.pt-1-2rem:hover{
+    background: #f3faff;
+}
+.capitalize{
+    text-transform: uppercase;
+}
+.capitalize-fl{
+    text-transform: capitalize;
+}

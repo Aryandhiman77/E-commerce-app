@@ -1,8 +1,10 @@
 const mongoose = require('mongoose')
 const OrderSchema = new mongoose.Schema ({
-    order_no:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'user'
+
+    order_no:{  // 10 digit unique number -> must be done in backend
+        type:String,
+        ref:'order',
+        unique:true
     },
     user_id:{
         type:mongoose.Schema.Types.ObjectId,
@@ -64,10 +66,6 @@ const OrderSchema = new mongoose.Schema ({
     },
     payment_transaction_id:{
         type:String,
-        required:true
-    },
-    zip_code:{
-        type:Number,
         required:true
     }
 })

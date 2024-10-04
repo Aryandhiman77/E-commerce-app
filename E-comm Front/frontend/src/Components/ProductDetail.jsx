@@ -5,26 +5,36 @@ import { param } from "jquery";
 import dataContext from "../../Context API/dataContext";
 import Spinner from "./Elements/Spinner";
 import ReactImageMagnify from "react-image-magnify";
+import VarientImageColor from "./Elements/VarientImageColor";
+import { useDispatch, useSelector } from 'react-redux';
+import { decrementer, incrementer } from "../Cart/cartSlice";
 
 const ProductDetail = (props) => {
-  const { productSlug } = useParams();
+  const params = useParams();
   const context = useContext(dataContext);
+  const selector = useSelector(state=>state?.cart)
   const { getProduct, viewProduct, productImages, addToCart, wishlist } =
     context;
+    const dispatch = useDispatch()
 
   const addItem = (e) => {
     console.log(e.target.value);
     const details = {
       productid: e.target.value,
-      quantity: 1,
+      quantity:selector.quantity,
     };
     addToCart(details);
   };
-  // const show= ()=>{
+  const incrementQnty =(e)=> {
+    dispatch(incrementer());
+    // dispatch(updateItem())
+  }
+  const decrementQuantity=()=>{
+    dispatch(decrementer());
 
-  // }
+  }
   useEffect(() => {
-    getProduct(productSlug);
+    getProduct(params.productSlug);
   }, []);
   return (
     <>
@@ -448,56 +458,8 @@ const ProductDetail = (props) => {
                                   (13 Reviews)
                                 </a>
                               </div>
+                              <VarientImageColor viewProduct={viewProduct} host={props.host} productSlug={params.productSlug}/>
                               
-                              <div
-                                className="colors reviews"
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  marginTop: "3px",
-                                  padding: "4px",
-                                  border:'1px solid #0f6cb2',
-                                  borderRadius:'12px'
-                                }}
-                              >
-                                {
-                                viewProduct.varients_ids &&
-                                viewProduct.varients_ids.length > 0 ? (
-                                  viewProduct.varients_ids.map((item, i) => {
-                                    return (
-                                    <div style={{display:'flex',flexDirection:'column'}}>
-                                      {
-                                        item.color?<Link
-                                        to={`/product/${viewProduct.product_url_slug}/${item.varient_name}`}
-                                        style={{
-                                          background: `${item.color}`,
-                                          height: "45px",
-                                          width: "45px",
-                                          borderRadius: "40px",
-                                          cursor: "pointer",
-                                          margin:'4px',
-                                          
-                                        }}
-                                        title={item.varient_name}
-                                      ></Link>:<Link
-                                      to={`/product/${viewProduct.product_url_slug}/${item.varient_name}`}
-                                      style={{
-                                        borderRadius: "40px",
-                                        cursor: "pointer",
-                                        margin:'4px',
-                                      }}
-                                      title={item.varient_name}
-                                    >{item.varient_name}</Link>
-                                      }
-                                    
-                                    </div>
-                                
-                                    );
-                                  })
-                                ) : (
-                                  <p>No variants available</p>
-                                )}
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -599,16 +561,16 @@ const ProductDetail = (props) => {
                                 <div className="arrows">
                                   <div className="arrow plus gradient">
                                     <span className="ir">
-                                      <i className="icon fa fa-sort-asc" />
+                                      <button className="incDecIcons icon fa fa-sort-asc" onClick={incrementQnty} />
                                     </span>
                                   </div>
                                   <div className="arrow minus gradient">
                                     <span className="ir">
-                                      <i className="icon fa fa-sort-desc" />
+                                      <button className="incDecIcons icon fa fa-sort-desc" onClick={decrementQuantity} />
                                     </span>
                                   </div>
                                 </div>
-                                <input type="text" defaultValue={1} />
+                                <input type="text" value={selector.quantity} />
                               </div>
                             </div>
                           </div>

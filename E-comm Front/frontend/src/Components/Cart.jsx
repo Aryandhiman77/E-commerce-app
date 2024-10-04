@@ -1,35 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react'
-import dataContext from '../../Context API/dataContext'
+import React, { useContext, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import {cartFetch}  from '../Cart/cartSlice';
+import CartItem from './CartItem';
 import { Link } from 'react-router-dom';
-
+import dataContext from '../../Context API/dataContext';
+import Spinner from './Elements/Spinner';
 const Cart = (props) => {
-    const context = useContext(dataContext);
-    const {cart,removeItemsFromCart,getCart} = context;
+  const { FormatPrice} = useContext(dataContext);
+  const data = useSelector(state=>state.cart)
+  const subtotal = data.data && data.subtotal;
+  const cart = data.data?.getAllCarts || [];
+    const dispatch = useDispatch();
     
-    const incrementQuantity = ()=>{
-        if(quantity>=0){
-            setQuantity(quantity+1);
-            console.log(quantity)
-        }
-    }
-    const decrementQuantity = ()=>{
-        if(quantity>0){
-            setQuantity(quantity-1);
-            console.log(quantity)
-        }
-        
-    }
-    const removeItems = (e)=>{
-
-        removeItemsFromCart(e.target.value)
-    }
     useEffect(()=>{
-      getCart();
-    },[])
+      dispatch(cartFetch());
+    },[dispatch])
   return (
+    
     <>
 <div>
+  {/* <h1>{quantity}</h1> */}
   <div className="breadcrumb">
+    <button onClick={(e)=>dispatch(addItem(cart))}>add item</button>
     <div className="container">
       <div className="breadcrumb-inner">
         <ul className="list-inline list-unstyled">
@@ -44,7 +36,7 @@ const Cart = (props) => {
       <div className="row ">
         <div className="shopping-cart">
           {
-            cart.length>0? <> <div className="shopping-cart-table ">
+            data.data?.getAllCarts?.length>0? <> <div className="shopping-cart-table ">
             <div className="table-responsive">
               <table className="table">
                 <thead>
@@ -53,95 +45,14 @@ const Cart = (props) => {
                     <th className="cart-description item">Image</th>
                     <th className="cart-product-name item">Product Name</th>
                     <th className="cart-qty item">Quantity</th>
-                    <th className="cart-sub-total item">Subtotal</th>
+                    <th className="cart-sub-total item">Price</th>
                     <th className="cart-total last-item">Grandtotal</th>
                   </tr>
                 </thead>{/* /thead */}
                 <tbody>
 
      {cart.map((item,i)=>{
-        return <tr key={i}>
-          {
-            !item.product_varient_id && <>
-            <td className="romove-item"><button  title="cancel" className="fa fa-trash icon" value={item._id} onClick={removeItems} style={{borderRadius: "20px",
-    height: "3rem",
-    width: "5rem",
-    border: "1px",
-    color: "red",fontSize:'1.5rem'}}></button></td>
-            <td className="cart-image">
-              <a className="entry-thumbnail" href="detail.html">
-              <img src={`${props.host}${item.product_id.image}`} alt="loading" />
-              </a>
-            </td>
-            <td className="cart-product-name-info" style={{textAlign:"center"}}>
-              <h4 className="cart-product-description"><a href="detail.html">{item.product_id.product_name}</a></h4>
-              <div className="row">
-                <div className="col-sm-12">
-                  <div className="rating rateit-small" />
-                </div>
-                <div className="col-sm-12">
-                  <div className="reviews">
-                    (06 Reviews)
-                  </div>
-                </div>
-              </div>{/* /.row */}
-            </td>
-            <td className="cart-product-quantity">
-              <div className="quant-input">
-                <div className="arrows">
-                  <div className="arrow plus gradient"><span className="ir" onClick={incrementQuantity}><i className="icon fa fa-sort-asc" />
-                  </span></div>
-                  <div className="arrow minus gradient"><span className="ir" onClick={decrementQuantity}><i className="icon fa fa-sort-desc" /></span></div>
-                </div>
-                <input type="text" defaultValue={quantity} />
-              </div>    
-            </td>
-            <td className="cart-product-sub-total"><span className="cart-sub-total-price">₹{item.product_id.price} </span></td>
-            <td className="cart-product-grand-total"><span className="cart-grand-total-price">₹{item.product_id.price} </span></td>
-            </>
-          }
-          {
-            !item.product_id && <>
-            <td className="romove-item"><button  title="cancel" className="fa fa-trash icon" value={item._id} onClick={removeItems} style={{borderRadius: "20px",
-    height: "3rem",
-    width: "5rem",
-    border: "1px",
-    color: "red",fontSize:'1.5rem'}}></button></td>
-            <td className="cart-image">
-              <a className="entry-thumbnail" href="detail.html">
-              <img src={`${props.host}${item.product_varient_id.varient_images[0]}`} alt="loading" />
-              </a>
-            </td>
-            <td className="cart-product-name-info" style={{textAlign:"center"}}>
-              <h4 className="cart-product-description"><a href="detail.html">{item.product_varient_id.varient_name}</a></h4>
-              <div className="row">
-                <div className="col-sm-12">
-                  <div className="rating rateit-small" />
-                </div>
-                <div className="col-sm-12">
-                  <div className="reviews">
-                    (06 Reviews)
-                  </div>
-                </div>
-              </div>{/* /.row */}
-            </td>
-
-            <td className="cart-product-quantity">
-              <div className="quant-input">
-                <div className="arrows">
-                  <div className="arrow plus gradient"><span className="ir" onClick={incrementQuantity}><i className="icon fa fa-sort-asc" />
-                  </span></div>
-                  <div className="arrow minus gradient"><span className="ir" onClick={decrementQuantity}><i className="icon fa fa-sort-desc" /></span></div>
-                </div>
-                <input type="text" defaultValue={quantity} />
-              </div>    
-            </td>
-            <td className="cart-product-sub-total"><span className="cart-sub-total-price">₹{item.product_varient_id.price} </span></td>
-            <td className="cart-product-grand-total"><span className="cart-grand-total-price">₹{item.product_varient_id.price} </span></td>
-            </>
-          }
-                    
-                  </tr>
+        return <CartItem key={i} item={item}  host={props.host} />
 })}
                 </tbody>{/* /tbody */}
                 <tfoot>
@@ -242,13 +153,13 @@ const Cart = (props) => {
                 <tr>
                   <th>
                     <div className="cart-sub-total">
-                      Subtotal<span className="inner-left-md">₹{cart.subtotal?cart.subtotal:0}</span>
+                      Subtotal<span className="inner-left-md">{FormatPrice(subtotal)}</span>
                     </div>
                     <div className="cart-sub-total">
-                      Shipping Charges<span className="inner-left-md">{cart.subtotal?'₹40':'₹0'}</span>
+                      Shipping Charges<span className="inner-left-md">{FormatPrice(40)}</span>
                     </div>
                     <div className="cart-grand-total">
-                      Grand Total<span className="inner-left-md">₹ {cart.subtotal?cart.subtotal+ 40:0} </span>
+                      Grand Total<span className="inner-left-md">{FormatPrice(subtotal+ 40)} </span>
                     </div>
                   </th>
                 </tr>
@@ -257,7 +168,7 @@ const Cart = (props) => {
                 <tr>
                   <td>
                     <div className="cart-checkout-btn pull-right">
-                      <button type="submit" className="btn btn-primary checkout-btn">PROCCED TO CHEKOUT</button>
+                      <Link to={'/checkout'} className="btn btn-primary checkout-btn">PROCCED TO CHEKOUT</Link>
                       <span >Checkout with multiples address!</span>
                     </div>
                   </td>

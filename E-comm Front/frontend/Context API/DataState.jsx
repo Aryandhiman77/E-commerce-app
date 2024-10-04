@@ -1,3 +1,4 @@
+
 import dataContext from "./dataContext";
 
 import React, { useState } from 'react'
@@ -11,11 +12,12 @@ const DataState = (props) => {
     const [categoryProducts,setCategoryProducts]= useState([]);
     const [viewVarient,setViewVarient] = useState([]);
     const [varientImages,setVarientImages] = useState([]);
-    const [itemQuantity,setitemQuantity] = useState([]);
+    const [shippingAddresses,setShippingAddresses] = useState([]);
+    
 
     const Toast = Swal.mixin({
         toast: true,
-        position: "bottom",
+        position: "top",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -129,13 +131,13 @@ const DataState = (props) => {
             getCart();
             Toast.fire({
                 icon: "success",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
         }else{
             if(result.message==="Please login first."){
                 Toast.fire({
                     icon: "error",
-                    title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                    title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
                   });
             }else{
                 removeItemsFromCart(result.checkProductInCart[0]._id);
@@ -161,7 +163,6 @@ const DataState = (props) => {
                 }
 
             });
-            setCartSubtotal(subtotal);
             result.getAllCarts.subtotal=subtotal;
             setCart(result.getAllCarts)
             
@@ -183,13 +184,13 @@ const DataState = (props) => {
             getCart();
             Toast.fire({
                 icon: "success",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
             
         }else{
             Toast.fire({
                 icon: "error",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
         }
     }
@@ -209,13 +210,13 @@ const DataState = (props) => {
             getWishlist();
             Toast.fire({
                 icon: "success",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
         }else{
             if(result.message==="Please login first."){
                 Toast.fire({
                     icon: "error",
-                    title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                    title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
                   });
             }else{
                 removeItemsFromWishlist(result.checkProductInWishlist[0]._id)
@@ -252,13 +253,13 @@ const DataState = (props) => {
             getWishlist();
             Toast.fire({
                 icon: "success",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
             
         }else{
             Toast.fire({
                 icon: "error",
-                title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
         }
     }
@@ -278,22 +279,181 @@ const DataState = (props) => {
             // getWishlist();
             // Toast.fire({
             //     icon: "success",
-            //     title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+            //     title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
             //   });
             
         }else{
             // Toast.fire({
             //     icon: "error",
-            //     title: `<h5>${capitalizeFirstLetter(result.message)}</h5>`
+            //     title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
             //   });
             console.log(result)
         }
     }
-    
+    //utility for formatting the price
+    const FormatPrice = (price)=>{
+        let newprice  =  new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'INR',
+      });
+      
+      return newprice.format(price)
+      }
 
+      const addShippingAddress = async(details) =>{
+        const response = await fetch(`${props.host}api/v1/shipping/`,{
+            method:"POST",
+            headers:{
+                "authorization":`bearer ${JSON.parse(JSON.stringify(localStorage.getItem("token")))}`,
+                "Content-type":"application/json",
+            },
+            body:JSON.stringify(
+                
+                {   
+                    username:details.username,
+                    mobile_no:details.mobile_no,
+                    locality:details.locality,
+                    full_address:details.full_address,
+                    address_type:details.address_type,
+                    state:details.state,
+                    city:details.city,
+                    zip_code:details.zip_code
+                }
+            )
+        })
+        const result = await response.json();
+        if(result.success){
+            setShippingAddresses(result.shippingAddresses)
+            Toast.fire({
+                icon: "success",
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
+              });
+              return true;
+
+        }else{
+            Toast.fire({
+                icon: "error",
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
+              });
+              return false;
+        }
+      }
+      const updateShippingAddress = async(details) =>{
+        const response = await fetch(`${props.host}api/v1/shipping/${details._id}`,{
+            method:"PUT",
+            headers:{
+                "authorization":`bearer ${JSON.parse(JSON.stringify(localStorage.getItem("token")))}`,
+                "Content-type":"application/json",
+            },
+            body:JSON.stringify(
+
+                {  
+                     username:details.username,
+                    mobile_no:details.mobile_no,
+                    locality:details.locality,
+                    full_address:details.full_address,
+                    address_type:details.address_type,
+                    state:details.state,
+                    city:details.city,
+                    zip_code:details.zip_code
+                }
+            )
+        })
+        const result = await response.json();
+        if(result.success){
+            Toast.fire({
+                icon: "success",
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
+              });
+              return true;
+        }else{
+            Toast.fire({
+                icon: "error",
+                title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
+              });
+              return false;
+        }
+      }
+      const getAllShippingAddresses = async() =>{
+        const response = await fetch(`${props.host}api/v1/shipping/`,{
+            headers:{
+                "authorization":`bearer ${JSON.parse(JSON.stringify(localStorage.getItem("token")))}`,
+                "Content-type":"application/json",
+            }
+        })
+        const result = await response.json();
+        if(result.success){
+            setShippingAddresses(result.shippingAddresses)
+            console.log(result)
+
+        }else{
+            console.log(result)
+        }
+      }
+      const removeShippingAddress = async(addressId) =>{
+        const swalWithBootstrapButtons = Swal.mixin({
+            buttonsStyling: true
+          });
+          return swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true,
+            padding:'3rem',
+           
+            buttonsStyling:{
+                padding:'7rem',
+
+            }
+          }).then(async(result) => {
+            
+            if (result.isConfirmed) {
+                const response = await fetch(`${props.host}api/v1/shipping/${addressId}`,{
+                    method:"DELETE",
+                    headers:{
+                        "authorization":`bearer ${JSON.parse(JSON.stringify(localStorage.getItem("token")))}`,
+                        "Content-type":"application/json",
+                    }
+                })
+                const result = await response.json();
+                if(result.success){
+                    swalWithBootstrapButtons.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                      });
+                      return true;
+                }else{
+                    swalWithBootstrapButtons.fire({
+                        title: "Cannot Delete!",
+                        text: result.message,
+                        icon: "error"
+                      });
+                      return false;
+                }
+             
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+              
+            ) {
+              swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                icon: "error"
+              });
+              return false;
+            }else{
+                return false;
+            }
+          });
+    
+      }
     
   return (
-    <dataContext.Provider value = {{fetchProducts,products,fetchCategories,categories,capitalizeFirstLetter,addToCart,cart,getCart,removeItemsFromCart,getProduct,viewProduct,productImages,getWishlist,wishlist,addToWishlist,removeItemsFromWishlist,getCategoryProducts,categoryProducts,getProductVarients,viewVarient,varientImages}}>
+    <dataContext.Provider value = {{Toast,fetchProducts,products,fetchCategories,categories,capitalizeFirstLetter,addToCart,cart,getCart,removeItemsFromCart,getProduct,viewProduct,productImages,getWishlist,wishlist,addToWishlist,removeItemsFromWishlist,getCategoryProducts,categoryProducts,getProductVarients,viewVarient,varientImages,FormatPrice,addShippingAddress,getAllShippingAddresses,shippingAddresses,updateShippingAddress,removeShippingAddress}}>
       {props.children}
     </dataContext.Provider>
   )

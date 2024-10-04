@@ -5,12 +5,11 @@ import Spinner from './Elements/Spinner';
 import ReactCarousel from './Elements/Carousel';
 // import ProductDetail from './ProductDetail';
 import { Link } from 'react-router-dom';
+import VarientImageColor from './Elements/VarientImageColor';
+import { param } from 'jquery';
 
 const ProductVarient = (props) => {
-    const rerender = ()=>{
-        getProduct(params.productSlug);
-        getProductVarients(params.varient);
-    }
+    
     
     const params = useParams();
     const {getProduct,getProductVarients,varientImages,viewVarient,viewProduct,addToCart} = useContext(dataContext);
@@ -448,71 +447,7 @@ const ProductVarient = (props) => {
                                 </a>
                               </div>
                               
-                              <div
-                                className="colors reviews"
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  marginTop: "3px",
-                                  padding: "4px",
-                                  border:'1px solid',
-                                  borderRadius:'12px'
-                                }}
-                              >
-                                {
-                                viewProduct.varients_ids &&
-                                viewProduct.varients_ids.length > 0 ? (
-                                  viewProduct.varients_ids.map((item, i) => {
-                                    return (
-                                    <div style={{display:'flex',flexDirection:'column'}}>
-                                    {
-                                        item.color?<Link
-                                        to={`/product/${viewProduct.product_url_slug}/${item.varient_name}`}
-                                        style={{
-                                          background: `${item.color}`,
-                                          height: "45px",
-                                          width: "45px",
-                                          borderRadius: "40px",
-                                          cursor: "pointer",
-                                          margin:'4px',
-                                          
-                                        }}
-                                        title={item.varient_name}
-                                      ></Link>:<Link
-                                      to={`/product/${viewProduct.product_url_slug}/${item.varient_name}`}
-                                      style={{
-                                        borderRadius: "40px",
-                                        cursor: "pointer",
-                                        margin:'4px',
-                                      }}
-                                      title={item.varient_name}
-                                    >{item.varient_name}</Link>
-                                      } 
-                                     
-                                    </div>
-                                    
-                                    
-                                    
-                                    );
-                                  })
-                                ) : (
-                                  <p>No variants available</p>
-                                )}
-                                 <Link
-                                      to={`/product/${viewProduct.product_url_slug}`}
-                                      style={{
-                                        borderRadius: "40px",
-                                        cursor: "pointer",
-                                        margin:'4px',
-                                        borderRadius:'40px',
-                                        border:'1px solid black',
-                                        display:'flex',
-                                        justifyContent:'center',
-                                        alignItems:'center',
-                                                                          }}
-                                      title={viewProduct.product_name}
-                                    ><img height={45} width={45} style={{ borderRadius:'40px',}} src={props.host+viewProduct.image} alt="" /></Link>
-                              </div>
+                              <VarientImageColor viewProduct={viewProduct} host={props.host} productSlug={params.productSlug}/>
                             </div>
                           </div>
                         </div>
