@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 const OrderSchema = new mongoose.Schema ({
 
-    order_no:{  // 10 digit unique number -> must be done in backend
+    order_no:{  // from razorpay
         type:String,
-        ref:'order',
-        unique:true
+        unique:true,
+        required:true
     },
     user_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        ref:'user',
+        required:true
     },
     total_amount:{
         type:Number,
@@ -49,6 +50,10 @@ const OrderSchema = new mongoose.Schema ({
         }
 
     },
+    paymentby:{
+        type:String,
+        default:null
+    },
     status:{
         type:String,
         enum:['placed' , 'processing' , 'shipping' , 'delivered'],
@@ -61,13 +66,16 @@ const OrderSchema = new mongoose.Schema ({
     },
     payment_type:{
         type:String,
-        enum:['netbanking','upi','cod'],
+        enum:['card','netbanking','upi','cod'],
         required:true
     },
     payment_transaction_id:{
         type:String,
-        required:true
+    },
+    auth_code:{
+        type:String
     }
+    
 })
 
 const Order = mongoose.model('order',OrderSchema)

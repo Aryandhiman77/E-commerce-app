@@ -29,6 +29,7 @@ const VarientImageColor = ({viewProduct,...props}) => {
                     width: "45px",
                     borderRadius: "40px",
                     border: `${pathname===`/product/${viewProduct.product_url_slug}/${item.varient_name}`?'2px solid ':''} `,
+                    boxShadow:`${pathname===`/product/${viewProduct.product_url_slug}/${item.varient_name}`?`0px 0px 9px 1px ${item.color}`:''} `,
                     cursor: "pointer",
                     padding:'22px',
                     margin: "4px",
@@ -43,6 +44,7 @@ const VarientImageColor = ({viewProduct,...props}) => {
                     cursor: "pointer",
                     margin: "4px",
                     border: `${pathname===`/product/${viewProduct.product_url_slug}/${item.varient_name}`?'2px solid ':''} `,
+                     boxShadow:`${pathname===`/product/${viewProduct.product_url_slug}/${item.varient_name}`?'0px 0px 9px 1px':''} `,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center", 
@@ -61,9 +63,7 @@ const VarientImageColor = ({viewProduct,...props}) => {
             </div>
           );
         })
-      ) : (
-        <p>No variants available</p>
-      )}
+      ) : ''}
       <Link
         to={`/product/${viewProduct.product_url_slug}`}
         style={{
@@ -74,6 +74,9 @@ const VarientImageColor = ({viewProduct,...props}) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          boxShadow:`${pathname===`/product/${viewProduct.product_url_slug}`?'0px 0px 9px 1px':''} `
+
+
         }}
         title={viewProduct.product_name}
       >

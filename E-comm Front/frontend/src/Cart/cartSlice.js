@@ -1,5 +1,5 @@
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit'
-
+import { useNavigate } from 'react-router-dom';
 const host = import.meta.env.VITE_REACT_API_URL;
 const Toast = Swal.mixin({
     toast: true,
@@ -12,6 +12,7 @@ const Toast = Swal.mixin({
       toast.onmouseleave = Swal.resumeTimer;
     }
   });
+  
 
 export const cartFetch = createAsyncThunk('cartFetch',async()=>{
     console.log('fetching cart data.')
@@ -22,7 +23,9 @@ export const cartFetch = createAsyncThunk('cartFetch',async()=>{
         }
     })
     const result = await response.json();
+    
     return result
+    
 })
 
 export const addItem = createAsyncThunk('addItem',async(state,action)=>{
@@ -40,6 +43,7 @@ export const addItem = createAsyncThunk('addItem',async(state,action)=>{
         })
     })
     const result = await response.json();
+    
     return result
 
 },  )
@@ -107,6 +111,7 @@ const cartSlice = createSlice({
                     icon: "error",
                     title: "Something went wrong. Please check your internet connection."
                   });
+                  
             // }, 1000);
             
         })
@@ -125,8 +130,10 @@ const cartSlice = createSlice({
             state.subtotal = arr.reduce((initialVal,cartItem)=>{
                 return initialVal + cartItem.price * cartItem.quantity;
             },0)
+            
 
             state.isLoading=false;
+            
         })
 
         builder.addCase(addItem.pending,(state,action)=>{
@@ -142,6 +149,7 @@ const cartSlice = createSlice({
                   
                   
             }else{
+                
                 Toast.fire({
                     icon: "error",
                     title: `<b class="alert">${action.payload.message}</b>`
@@ -218,6 +226,7 @@ const cartSlice = createSlice({
                 title: action.payload.message
               });
             console.log("Error",action.payload)
+            
           
         })
         

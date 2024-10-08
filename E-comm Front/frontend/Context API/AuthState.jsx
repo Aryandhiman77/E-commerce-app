@@ -38,13 +38,12 @@ const Toast = Swal.mixin({
               icon: "success",
               title: `<b class="alert">${LoginResult.message}</b>`
             }); 
-           console.log(LoginResult)
+          //  console.log(LoginResult)
            localStorage.setItem("user",JSON.stringify({
             username:LoginResult.user,
             email:LoginResult.email,
             mobile_no:LoginResult.phone_number
            }))
-
             
         }else{
           Toast.fire({
@@ -74,6 +73,7 @@ const Toast = Swal.mixin({
               icon: "success",
               title: `<b class="alert">${result.message}</b>`
             }); 
+            
             localStorage.setItem('user',JSON.stringify(data));
 
            return true;

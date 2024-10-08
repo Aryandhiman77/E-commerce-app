@@ -14,7 +14,7 @@ require('dotenv').config();
 require('./config/dbConn')
 //! express middlewares
 app.use(express.json())
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'/utilities')))
 app.use(express.static(path.join(__dirname,'/uploads')))
 app.use(express.static(path.join(__dirname,'/public')))
@@ -32,6 +32,7 @@ app.use('/api/v1/order',orderRouter)
 app.use('/api/v1/cart',cartRouter)
 app.use('/api/v1/wishlist',wishlistRouter)
 app.use('/api/v1/shipping',shippingAddressRouter)
+app.use('/api/v1/order',orderRouter)
 
 app.set('view engine','ejs')
 app.set('views','admin')

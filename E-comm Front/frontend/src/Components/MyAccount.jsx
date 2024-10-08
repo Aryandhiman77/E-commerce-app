@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, Outlet } from "react-router-dom";
 
 import ManageAddress from "./Account/ManageAddress";
 import ManageProfile from "./Account/ManageProfile";
 import AuthContext from "../../Context API/authContext";
+import { render } from "react-dom";
+import MyOrders from "./Account/MyOrders";
 
-const MyAccount = () => {
+const MyAccount = ({host}) => {
   const user  = JSON.parse(localStorage.getItem('user'));
   const renderComponent = (path)=>{
     const url = new URL(location.href).pathname;
@@ -37,7 +39,7 @@ const { handleLogout } = useContext(AuthContext);
       <div className="body-content outer-top-xs">
         <div className="container">
           <div className="row">
-            <div className="col-xs-12 col-sm-12 col-md-3 sidebar">
+            <div className="col-xs-12 col-sm-12 col-md-3 sidebar"   style={{position:'sticky',top:'0'}}>
               {/* ================================== TOP NAVIGATION ================================== */}
 
               {/* /.side-menu */}
@@ -133,7 +135,17 @@ const { handleLogout } = useContext(AuthContext);
                       </p>
                       <hr className="m-0"/>
                     </div>
-
+                    <div className="sub-heading mtop-1" style={{padding:'1rem',paddingTop:'0.4rem'}}>
+                      <h4 className="m-0">
+                        <Link to={"/my-account/orders"} className="margin-left-2rem  color-gray" >
+                        <i className="fa fa-truck "></i>
+                          <span className="margin-left-4px"
+                          style={{fontWeight:renderComponent('/my-account/orders')?'bold':'',color:renderComponent('/my-account/orders')?'black':''}}
+                          > My Orders</span>
+                        </Link>
+                      </h4>
+                      <hr className="pt-1-2rem mtop-1-2 "/>
+                    </div>
                     {/* /.sidebar-widget-body */}
                   </div>
                   
@@ -155,9 +167,12 @@ const { handleLogout } = useContext(AuthContext);
              {
              renderComponent('/my-account/addresses')&&<ManageAddress/>
              }
+             {
+              renderComponent('/my-account/orders') && <MyOrders host={host}/>
+             }
             </div>
               {/* /.conditional rendering container */}
-              
+
             {/* /.col */}
           </div>
           {/* /.row */}

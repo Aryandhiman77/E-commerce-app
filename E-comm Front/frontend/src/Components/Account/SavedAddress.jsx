@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import dataContext from "../../../Context API/dataContext";
 
-const Address = ({ address,manageEdit}) => {
+const Address = ({ address,manageEdit,hideButtons}) => {
   const  {removeShippingAddress,getAllShippingAddresses} = useContext(dataContext);
   const removeAddress = ()=>{
     removeShippingAddress(address?._id).then((v)=>{ 
@@ -15,7 +15,7 @@ const Address = ({ address,manageEdit}) => {
         padding: "1.4rem",
         fontSize: "1.6rem",
         cursor: "pointer",
-        border: "1px solid #e0e0e0",
+        border: "1px solid #e0e0e0"
       }}
     >
        
@@ -36,10 +36,13 @@ const Address = ({ address,manageEdit}) => {
         >
           {address.address_type}
         </p>
-        <span style={{ float: "right", fontSize: "2rem" }}>
+        {!hideButtons &&<span style={{ float: "right", fontSize: "2rem" }}>
           <span className="fa fa-edit text-success" title="Edit address" onClick={()=>manageEdit(address)} ></span>
           <span className="fa fa-trash margin-left-1-2rem text-danger" title="Delete address" onClick={removeAddress}></span>
         </span>
+        
+        }
+        
         <div className="margin-left-1-2rem text-black capitalize-fl">
           <div
             style={{

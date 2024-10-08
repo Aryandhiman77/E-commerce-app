@@ -2,17 +2,28 @@ import React, { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import {cartFetch}  from '../Cart/cartSlice';
 import CartItem from './CartItem';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import dataContext from '../../Context API/dataContext';
-import Spinner from './Elements/Spinner';
+
 const Cart = (props) => {
-  const { FormatPrice} = useContext(dataContext);
+
+  const { FormatPrice,paymentHandler} = useContext(dataContext);
   const data = useSelector(state=>state.cart)
   const subtotal = data.data && data.subtotal;
   const cart = data.data?.getAllCarts || [];
     const dispatch = useDispatch();
+    const handlePayment= ()=>{
+      let paymentObj = {
+        amount:parseInt(subtotal+40),
+        details:{
+          "d":""
+        }
+      }
+      paymentHandler();
+    }
     
     useEffect(()=>{
+
       dispatch(cartFetch());
     },[dispatch])
   return (
@@ -21,7 +32,7 @@ const Cart = (props) => {
 <div>
   {/* <h1>{quantity}</h1> */}
   <div className="breadcrumb">
-    <button onClick={(e)=>dispatch(addItem(cart))}>add item</button>
+    {/* <button onClick={(e)=>dispatch(addItem(cart))}>add item</button> */}
     <div className="container">
       <div className="breadcrumb-inner">
         <ul className="list-inline list-unstyled">
@@ -60,8 +71,7 @@ const Cart = (props) => {
                     <td colSpan={7}>
                       <div className="shopping-cart-btn">
                         <span >
-                          <a href="#" className="btn btn-upper btn-primary outer-left-xs">Continue Shopping</a>
-                          <a href="#" className="btn btn-upper btn-primary pull-right outer-right-xs">Update shopping cart</a>
+                          <Link to={'/'} className="btn btn-upper btn-primary outer-left-xs">Continue Shopping</Link>
                         </span>
                       </div>{/* /.shopping-cart-btn */}
                     </td>
@@ -71,59 +81,22 @@ const Cart = (props) => {
             </div>
             </div>
             </> :
-            <div>
-              <h1>No Items in Cart.</h1>
+            <>
+             <div className='display-flex align-center flex-column'>
+              <h1>No items in cart.</h1>
+              <img height={300} width={400} src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-illustration-download-in-svg-png-gif-file-formats--state-no-items-zero-page-added-states-pack-design-development-illustrations-4610092.png?f=webp" alt="" />
+                        <Link to={'/'} className="btn btn-primary margin-bottom-2rem">Continue Shopping</Link>
             </div>
+
+
+
+            </>
+           
+            
           }
           
-         <div className="col-md-4 col-sm-12 estimate-ship-tax">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    <span className="estimate-title">Estimate shipping and tax</span>
-                    <p>Enter your destination to get shipping and tax.</p>
-                  </th>
-                </tr>
-              </thead>{/* /thead */}
-              <tbody>
-                <tr>
-                  <td>
-                    <div className="form-group">
-                      <label className="info-title control-label">Country <span>*</span></label>
-                      <select className="form-control unicase-form-control selectpicker">
-                        <option>--Select options--</option>
-                        <option>India</option>
-                        <option>SriLanka</option>
-                        <option>united kingdom</option>
-                        <option>saudi arabia</option>
-                        <option>united arab emirates</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label className="info-title control-label">State/Province <span>*</span></label>
-                      <select className="form-control unicase-form-control selectpicker">
-                        <option>--Select options--</option>
-                        <option>TamilNadu</option>
-                        <option>Kerala</option>
-                        <option>Andhra Pradesh</option>
-                        <option>Karnataka</option>
-                        <option>Madhya Pradesh</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label className="info-title control-label">Zip/Postal Code</label>
-                      <input type="text" className="form-control unicase-form-control text-input" placeholder="Zip Code.."/>
-                    </div>
-                    <div className="pull-right">
-                      <button type="submit" className="btn-upper btn btn-primary">GET A QOUTE</button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>{/* /.estimate-ship-tax */}
-          <div className="col-md-4 col-sm-12 estimate-ship-tax">
+         {/* /.estimate-ship-tax */}
+          <div className="col-md-8 col-sm-12 estimate-ship-tax">
             <table className="table">
               <thead>
                 <tr>
@@ -169,7 +142,7 @@ const Cart = (props) => {
                   <td>
                     <div className="cart-checkout-btn pull-right">
                       <Link to={'/checkout'} className="btn btn-primary checkout-btn">PROCCED TO CHEKOUT</Link>
-                      <span >Checkout with multiples address!</span>
+                      {/* <button className='btn btn-primary' onClick={handlePayment}>Checkout</button> */}
                     </div>
                   </td>
                 </tr>

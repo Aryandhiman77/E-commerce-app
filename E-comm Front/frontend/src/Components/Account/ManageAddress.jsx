@@ -76,6 +76,7 @@ const ManageAddress = () => {
               <h4>
                 <b>Manage Addresses</b>
               </h4>
+              <hr />
               <div
                 style={{    
                   width: "100%",

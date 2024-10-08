@@ -81,6 +81,8 @@ const Product = (props) => {
                 <img height={240} src={`${props.host}${props.product.image}`} />
               </Link>
             </div>
+            <span className="quantity">{props.product.stock_quantity>0?<p className="text-success">In Stock</p>:<p className="text-danger">Out of Stock</p>}
+                              </span>
             <Link to={`/product/${props.product.product_url_slug}`}>
               {/* <div className="tag new"><span>new</span></div> */}
             </Link>

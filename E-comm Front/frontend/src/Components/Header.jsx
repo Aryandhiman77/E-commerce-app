@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dataContext from "../../Context API/dataContext";
 import AuthContext from "../../Context API/authContext";
 import Wishlist from "./Wishlist";
@@ -7,14 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { cartFetch, removeItem } from "../Cart/cartSlice";
 
-
 const Header = (props) => {
-
   const dispatch = useDispatch();
-  const {FormatPrice,categories, wishlist, getWishlist} = useContext(dataContext)
+  const { FormatPrice, categories, wishlist, getWishlist } =
+    useContext(dataContext);
   let data = useSelector((state) => state.cart);
   const subtotal = data.data && data.subtotal;
   const { handleLogout } = useContext(AuthContext);
+
+
 
   const handleRemoveItem = (e) => {
     dispatch(removeItem({ cartid: e.target.value })).then(() => {
@@ -23,72 +24,107 @@ const Header = (props) => {
   };
 
   const cart = data.data?.getAllCarts || [];
-  const cartlength = data.data?.getAllCarts?data.data.getAllCarts.length:'0';
+  const cartlength = data.data?.getAllCarts
+    ? data.data.getAllCarts.length
+    : "0";
   useEffect(() => {
     getWishlist(); // Fetch wishlist only once on mount
     dispatch(cartFetch());
   }, [dispatch]);
 
   return (
-    
     <>
-    
-    
       {/* ============================================== HEADER ============================================== */}
-      <header className="header-style-1" style={{    position: "sticky",
-      top: "0",
-      zIndex: "5"}}>
+      <header
+        className="header-style-1"
+        style={{ position: "sticky", top: "0", zIndex: "5" }}
+      >
         {/* <h1>{selector}</h1> */}
         {/* ============================================== TOP MENU ============================================== */}
-        <div className="top-bar animate-dropdown" >
+        <div className="top-bar animate-dropdown" style={{background:"#2874f0"}}>
           <div className="container">
             <div className="header-top-inner">
               <div className="cnt-account">
                 <ul className="list-unstyled">
-                  <li className="myaccount">
-                    <Link to={'/my-account'}>
-                      <span>My Account</span>
-                    </Link>
-                  </li>
-                  <li className="wishlist" style={{position:'relative'}}>
-                    <Link to="/wishlist">
-                    <span style={{position:'absolute',right:"0",top:'-8px',background:'#fdd923',height:'15px',width:'15px',display:'flex',justifyContent:'center',alignItems:'center',borderRadius:'40px',color:'#106cab'}}>{wishlist.length}</span>
-                      <span>Wishlist </span>
-                    </Link>
-                  </li>
-                  <li className="header_cart hidden-xs" style={{position:'relative'}}>
-                  
-                    <Link to="/cart">
-                    <span style={{position:'absolute',right:"0",top:'-8px',background:'#fdd923',height:'15px',width:'15px',display:'flex',justifyContent:'center',alignItems:'center',borderRadius:'40px',color:'#106cab'}}>{cartlength}</span>
-                      <span>My Cart</span>
-                    </Link>
-                  </li>
-                  <li className="check">
-                    <Link to="/">
-                      <span>Checkout</span>
-                    </Link>
-                  </li>
-                  {
-                    !localStorage.getItem('token')?<><li className="login">
-                    <Link to="/login">
-                      <span>Login</span>
-                    </Link>
-                  </li>
-                  <li className="register">
-                  <Link to="/register">
-                    <span>Register</span>
-                  </Link>
-                </li>
-                </>
-                  :
-                  <li className="logout">
-                    <Link onClick={handleLogout}>
-                      <span>Logout</span>
-                    </Link>
-                  </li>
-                  
-                  }
-                  
+                  {localStorage.getItem('token') ? (
+                    <>
+                      <li className="myaccount">
+                        <Link to={"/my-account"}>
+                          <span>My Account</span>
+                        </Link>
+                      </li>
+                      <li className="wishlist" style={{ position: "relative" }}>
+                        <Link to="/wishlist">
+                          <span
+                            style={{
+                              position: "absolute",
+                              right: "0",
+                              top: "-8px",
+                              background: "#fdd923",
+                              height: "15px",
+                              width: "15px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "40px",
+                              color: "#106cab",
+                            }}
+                          >
+                            {wishlist.length}
+                          </span>
+                          <span>Wishlist </span>
+                        </Link>
+                      </li>
+                      <li
+                        className="header_cart hidden-xs"
+                        style={{ position: "relative" }}
+                      >
+                        <Link to="/cart">
+                          <span
+                            style={{
+                              position: "absolute",
+                              right: "0",
+                              top: "-8px",
+                              background: "#fdd923",
+                              height: "15px",
+                              width: "15px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "40px",
+                              color: "#106cab",
+                            }}
+                          >
+                            {cartlength}
+                          </span>
+                          <span>My Cart</span>
+                        </Link>
+                      </li>
+                      <li className="check">
+                        <Link to="/checkout">
+                          <span>Checkout</span>
+                        </Link>
+                      </li>
+                      <li className="logout">
+                        <Link onClick={handleLogout}>
+                          <span>Logout</span>
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li className="login">
+                        <Link to="/login">
+                          <span>Login</span>
+                        </Link>
+                      </li>
+                      <li className="register">
+                        <Link to="/register">
+                          <span>Register</span>
+                        </Link>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
               {/* /.cnt-account */}
@@ -152,7 +188,7 @@ const Header = (props) => {
         </div>
         {/* /.header-top */}
         {/* ============================================== TOP MENU : END ============================================== */}
-        <div className="main-header">
+        <div className="main-header" style={{background:'#2874f0'}}>
           <div className="container">
             <div className="row">
               <div className="col-xs-12 col-sm-12 col-md-3 logo-holder">
@@ -237,101 +273,125 @@ const Header = (props) => {
                       </div>
                     </div>
                   </Link>
-                  <ul className="dropdown-menu" style={{width:'35rem'}} >
-                    <div style={{overflowY:'scroll',display:"flex",flexWrap:"wrap",maxHeight:'25rem'}}>
-                    {cart && cart.map((item, i) => {
-                      return (
-                        <li key={i}>
-                          {!item.product_id && (
-                            <div className="cart-item product-summary">
-                              <div className="row" style={{margin:0}}>
-                                <div className="col-xs-4">
-                                  <div className="image">
-                                    {" "}
-                                    <Link to="/">
-                                      <img
-                                        src={`${props.host}${
-                                          "/" +
-                                          item.product_varient_id
-                                            .varient_images[0]
-                                        }`}
-                                        alt="loading"
-                                      />
-                                    </Link>{" "}
+                  <ul className="dropdown-menu" style={{ width: "35rem" }}>
+                    <div
+                      style={{
+                        overflowY: "scroll",
+                        display: "flex",
+                        flexWrap: "wrap",
+                        maxHeight: "25rem",
+                      }}
+                    >
+                      {cart &&
+                        cart.map((item, i) => {
+                          return (
+                            <li key={i}>
+                              {!item.product_id && (
+                                <div className="cart-item product-summary">
+                                  <div className="row" style={{ margin: 0 }}>
+                                    <div className="col-xs-4">
+                                      <div className="image">
+                                        {" "}
+                                        <Link to="/">
+                                          <img
+                                            src={`${props.host}${
+                                              "/" +
+                                              item.product_varient_id
+                                                .varient_images[0]
+                                            }`}
+                                            alt="loading"
+                                          />
+                                        </Link>{" "}
+                                      </div>
+                                    </div>
+                                    <div className="col-xs-7">
+                                      <h3 className="name">
+                                        <Link to="index8a95.html?page-detail">
+                                          {item.product_varient_id.varient_name}
+                                        </Link>
+                                      </h3>
+                                      <div className="price">
+                                        {FormatPrice(
+                                          item.product_varient_id.price
+                                            ? item.product_varient_id.price
+                                            : 0
+                                        )}
+                                        {item.quantity > 1 && (
+                                          <span style={{ color: "red" }}>
+                                            {" x " + item.quantity}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="col-xs-1 action">
+                                      {" "}
+                                      <button
+                                        value={item._id}
+                                        onClick={handleRemoveItem}
+                                        className="fa fa-trash"
+                                        style={{
+                                          borderRadius: "20px",
+                                          height: "3rem",
+                                          width: "3rem",
+                                          border: "1px",
+                                          color: "red",
+                                          fontSize: "1.5rem",
+                                        }}
+                                      ></button>
+                                    </div>
                                   </div>
+                                  <hr />
                                 </div>
-                                <div className="col-xs-7">
-                                  <h3 className="name">
-                                    <Link to="index8a95.html?page-detail">
-                                      {item.product_varient_id.varient_name}
-                                    </Link>
-                                  </h3>
-                                  <div className="price">
-                                    {FormatPrice(item.product_varient_id.price?item.product_varient_id.price:0)}{item.quantity>1&&<span style={{color:'red'}}>{' x '+item.quantity}</span>}
-                                  </div> 
-                                </div>
-                                <div className="col-xs-1 action">
-                                  {" "}
-                                  <button
-                                    value={item._id}
-                                    onClick={handleRemoveItem}
-                                    className="fa fa-trash"
-                                    style={{
-                                      borderRadius: "20px",
-                                      height: "3rem",
-                                      width: "3rem",
-                                      border: "1px",
-                                      color: "red",
-                                      fontSize: "1.5rem",
-                                    }}
-                                  ></button>
-                                </div>
-                              </div>
-                              <hr />
-                            </div>
-                          )}
-                          {!item.product_varient_id && (
-                            <div className="cart-item product-summary">
-                              <div className="row" style={{margin:0}}>
-                                <div className="col-xs-4">
-                                  <div className="image">
-                                    {" "}
-                                    <Link to="/">
-                                      <img
-                                        src={`${props.host}${item.product_id.image}`}
-                                        alt="loading"
-                                      />
-                                    </Link>{" "}
+                              )}
+                              {!item.product_varient_id && (
+                                <div className="cart-item product-summary">
+                                  <div className="row" style={{ margin: 0 }}>
+                                    <div className="col-xs-4">
+                                      <div className="image">
+                                        {" "}
+                                        <Link to="/">
+                                          <img
+                                            src={`${props.host}${item.product_id.image}`}
+                                            alt="loading"
+                                          />
+                                        </Link>{" "}
+                                      </div>
+                                    </div>
+                                    <div className="col-xs-7">
+                                      <h3 className="name">
+                                        <Link to="index8a95.html?page-detail">
+                                          {item.product_id.product_name}
+                                        </Link>
+                                      </h3>
+                                      <div className="price">
+                                        {FormatPrice(
+                                          item.product_id.price
+                                            ? item.product_id.price
+                                            : 0
+                                        )}
+                                        {item.quantity > 1 && (
+                                          <span style={{ color: "red" }}>
+                                            {" x " + item.quantity}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="col-xs-1 action">
+                                      {" "}
+                                      <button
+                                        value={item._id}
+                                        onClick={handleRemoveItem}
+                                        className="fa fa-trash header-remove-btn"
+                                      ></button>
+                                    </div>
                                   </div>
+                                  <hr />
                                 </div>
-                                <div className="col-xs-7">
-                                  <h3 className="name">
-                                    <Link to="index8a95.html?page-detail">
-                                      {item.product_id.product_name}
-                                    </Link>
-                                  </h3>
-                                  <div className="price">
-                                    {FormatPrice(item.product_id.price?item.product_id.price:0)}
-                                     {item.quantity>1&& <span style={{color:'red'}}>{' x '+item.quantity}</span>}
-                                  </div>
-                                </div>
-                                <div className="col-xs-1 action">
-                                  {" "}
-                                  <button
-                                    value={item._id}
-                                    onClick={handleRemoveItem}
-                                    className="fa fa-trash header-remove-btn"
-                                    
-                                  ></button>
-                                </div>
-                              </div>
-                              <hr />
-                            </div>
-                          )}
-                        </li>
-                      );
-                    })}
-                     </div>
+                              )}
+                            </li>
+                          );
+                        })}
+                    </div>
                     <div className="clearfix" />
                     <div className="clearfix cart-total">
                       <div className="pull-right">
@@ -349,7 +409,6 @@ const Header = (props) => {
                         Checkout
                       </Link>{" "}
                     </div>
-                   
                   </ul>
                   {/* /.dropdown-menu*/}
                 </div>

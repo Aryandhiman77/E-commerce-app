@@ -19,14 +19,7 @@ const checkLoginMiddleware = (req,res,next)=>{
                 next();
             })
         }
-        // if(cookietoken){
-        //     cookietoken = cookietoken.replace('%20'," ")
-        //     cookietoken = cookietoken.split(' ')[1];
-        //     console.log(cookietoken)
-        //     next();
-        // }
-        
-
+       
     }catch(error){
         res.status(500).json({message:'Internal Server Error.',error:error.message})
     }

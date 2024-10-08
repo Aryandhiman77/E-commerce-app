@@ -509,6 +509,7 @@ const ProductDetail = (props) => {
                               <span className="price">
                                 ₹{viewProduct.price}
                               </span>
+                              
                               <span className="price-strike">$900.00</span>
                             </div>
                           </div>

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const CartItem = ({item,host}) => {
   const {FormatPrice} = useContext(dataContext)
-
+  
     const dispatch = useDispatch();
     const [quantity, setquantity] = useState(item.quantity);
 

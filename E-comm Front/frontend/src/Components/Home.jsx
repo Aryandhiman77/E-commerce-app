@@ -1141,7 +1141,7 @@ products.length===0?<Spinner/>:
                       <span className="shopping-needs">Get 40% off on selected items</span></h2>
                   </div>
                 </div>
-                <div className="new-label">
+                <div className="new-label" style={{zIndex:'1'}}>
                   <div className="text">NEW</div>
                 </div>
                 {/* /.new-label */} 

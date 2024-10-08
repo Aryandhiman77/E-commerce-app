@@ -16,6 +16,10 @@ const orderItemSchema = new mongoose.Schema ({
         type:String,
         required:true,
     },
+    product_image:{
+        type:String,
+        required:true,
+    },
     color:{
         type:String,
         default:null

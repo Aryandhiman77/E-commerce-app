@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AuthContext from '../../Context API/authContext'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 const Login = (props) => {
     const context = useContext(AuthContext);
@@ -13,6 +13,7 @@ const Login = (props) => {
     const handleOnChange = (e)=>{
         setLoginDetails({...LoginDetails,[e.target.name]:e.target.value})
     }
+    
 
   return (
       <div>
@@ -37,9 +38,9 @@ const Login = (props) => {
                 <label className="info-title" htmlFor="LoginPass">Password <span>*</span></label>
                 <input type="password" name='LoginPass' className="form-control unicase-form-control text-input" onChange={handleOnChange}  id="LoginPass" />
               </div>
-              <div className="radio outer-xs">
+              <div className="checkbox">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios2" defaultValue="option2" />Remember me!
+                  <input type="checkbox" name="rememberme" id="rememberme" defaultValue="option2" />Remember me!
                 </label>
                 <a href="#" className="forgot-password pull-right">Forgot your Password?</a>
               </div>

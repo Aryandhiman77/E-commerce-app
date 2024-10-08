@@ -28,6 +28,11 @@ const addItemToCart = async(req,res) =>{
     }
     try {
         const user_id = req.user;
+        // const cartLength = await Cart.find({user_id}).size()
+        // console.log(cartLength);
+        // if(cartLength>10){
+        //     return res.status(400).json({ success: false, message: "Cart can contain maximum 10 items" });
+        // }
         const {product_id,product_varient_id,quantity} = req.body;
         if(!product_id && !product_varient_id){
             return res.status(400).json({ success: false, message: "Product id / varient id not found." });

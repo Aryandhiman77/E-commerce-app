@@ -1,7 +1,9 @@
 
+
 import dataContext from "./dataContext";
 
 import React, { useState } from 'react'
+import {  useNavigate } from 'react-router-dom';
 const DataState = (props) => {
     const [products,setProducts] = useState([]);
     const [categories,setCategories] = useState([]);
@@ -13,6 +15,8 @@ const DataState = (props) => {
     const [viewVarient,setViewVarient] = useState([]);
     const [varientImages,setVarientImages] = useState([]);
     const [shippingAddresses,setShippingAddresses] = useState([]);
+    const [orders,setOrders] = useState([]);
+    const navigate = useNavigate();
     
 
     const Toast = Swal.mixin({
@@ -26,6 +30,11 @@ const DataState = (props) => {
           toast.onmouseleave = Swal.resumeTimer;
         }
       });
+    
+      const checkisLogin = (msg)=>{
+         if(msg === "Please login first.") return redirect('/login')
+      } 
+      
       
     const fetchProducts=async()=>{
         const fetchProducts = await fetch(`${props.host}api/v1/product/`,{
@@ -134,11 +143,13 @@ const DataState = (props) => {
                 title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
               });
         }else{
+            
             if(result.message==="Please login first."){
                 Toast.fire({
                     icon: "error",
                     title: `<b class="alert">${capitalizeFirstLetter(result.message)}</b>`
                   });
+
             }else{
                 removeItemsFromCart(result.checkProductInCart[0]._id);
             }
@@ -168,6 +179,7 @@ const DataState = (props) => {
             
         }else{
             console.log(result)
+            
         }
     }
     const removeItemsFromCart = async(itemid)=>{
@@ -451,9 +463,93 @@ const DataState = (props) => {
           });
     
       }
+      
+      const generateReceiptId=(length)=> {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let receiptId = '';
+        
+        for (let i = 0; i < length; i++) {
+          receiptId += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        
+        return receiptId;
+      }
+      
+      
+    const headers = {
+        "authorization":`bearer ${JSON.parse(JSON.stringify(localStorage.getItem("token")))}`,
+        "Content-type":"application/json",
+    }
+      const paymentHandler = async(orderDetails,notes)=>{
+
+       
+        
+        const response = await fetch(`${props.host}api/v1/order/`,{
+            method:"POST",
+            headers,
+            body:JSON.stringify(
+                {  
+                    amount:parseInt(orderDetails.amount*100),
+                    currency:"INR",
+                    receipt: generateReceiptId(10),
+                    partial_payment:false
+                }
+            )
+        })
+        const order = await response.json();
+
+        const {username,email,mobile_no}=JSON.parse(localStorage.getItem('user'))
+        if(order.success){
+            let getapikey = await fetch(`${props.host}api/v1/order/razorPay/getkey`,{headers});
+            getapikey = await getapikey.json();
+            
+            const options = {
+                key: getapikey.key, 
+                amount:order.order.amount, // in paise
+                currency: "INR",
+                name: "Shopit", //your business name
+                description: JSON.stringify(orderDetails),
+                image: "https://example.com/your_logo",
+                order_id: order.order.id,
+                callback_url:`http://localhost:8000/api/v1/order/verify-payment`,
+                prefill: { 
+                    name: username, //your customer's name
+                    email,
+                    contact: mobile_no //Provide the customer's phone number for better conversion rates 
+                },
+                notes,
+                theme: {
+                    color: "#167ed2"    
+                }
+            };
+            // console.log(options)
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.open();
+            // e.preventDefault()
+        }else{
+            console.log(result)
+        }
+      }
+      const fetchAllOrders = async()=>{
+        const response = await fetch(`${props.host}api/v1/order/`,{headers})
+        const result = await response.json();
+        if(result.success){
+            setOrders(result.orders);
+        }else{
+            console.log('error',orders)
+        }
+      }
+      const getAllOrdersusingOrn = async(orn)=>{
+        const response = await fetch(`${props.host}api/v1/order/${orn}`,{
+            method:"POST",
+            headers
+        })
+        const order = await response.json();
+      }
     
   return (
-    <dataContext.Provider value = {{Toast,fetchProducts,products,fetchCategories,categories,capitalizeFirstLetter,addToCart,cart,getCart,removeItemsFromCart,getProduct,viewProduct,productImages,getWishlist,wishlist,addToWishlist,removeItemsFromWishlist,getCategoryProducts,categoryProducts,getProductVarients,viewVarient,varientImages,FormatPrice,addShippingAddress,getAllShippingAddresses,shippingAddresses,updateShippingAddress,removeShippingAddress}}>
+    <dataContext.Provider value = {{Toast,fetchProducts,products,fetchCategories,categories,capitalizeFirstLetter,addToCart,cart,getCart,removeItemsFromCart,getProduct,viewProduct,productImages,getWishlist,wishlist,addToWishlist,removeItemsFromWishlist,getCategoryProducts,categoryProducts,getProductVarients,viewVarient,varientImages,FormatPrice,addShippingAddress,getAllShippingAddresses,shippingAddresses,updateShippingAddress,removeShippingAddress,paymentHandler,getAllOrdersusingOrn,fetchAllOrders,orders}}>
       {props.children}
     </dataContext.Provider>
   )
