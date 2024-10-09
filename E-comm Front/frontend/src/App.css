@@ -289,3 +289,53 @@
 .p-2rem{
   padding: 2rem;
 }
+
+
+HTML CSS JSResult Skip Results Iframe
+EDIT ON
+html,body{margin: 0px;background-color: #eee;}
+
+#partA{
+  /* margin:20px auto; */
+  width: 20px;height: 20px;
+  background-image:-webkit-radial-gradient(center,rgba(238,238,238,0.5) 60%,rgba(0,0,0,1) 100%);
+  border-radius:10px; 
+  transform-origin:center center;  
+  animation:fly 9s infinite;
+  animation-timing-function:linear;
+}
+
+#partA:after{
+  content:"";
+  position:absolute;
+  width: 30px;height: 30px;
+  background-image:-webkit-radial-gradient(center,rgba(238,238,238,0.5) 60%,rgba(0,0,0,1) 100%);
+  border-radius:100px; 
+  transform-origin:center center;  
+  animation:fly s infinite;
+  animation-timing-function:linear;
+}
+
+#partA:before{
+  content:"";
+  position:absolute;
+  width: 10px;height: 10px;
+  background-image:-webkit-radial-gradient(center,rgba(238,238,238,0.5) 60%,rgba(0,0,0,1) 100%);
+  border-radius:100px; 
+  transform-origin:center center;  
+  animation:fly 3s infinite;
+  animation-timing-function:linear;
+}
+
+  @-webkit-keyframes fly 
+      {
+         0%{ transform: scale(0.5); opacity: 0;
+               transform-origin:center center;
+              }
+         50%{ transform: scale(1);opacity: 1;                    transform-origin:center center;}
+         100% {transform: scale(1.5);opacity: 0;                  transform-origin:center center;} 
+       }
+
+
+
+

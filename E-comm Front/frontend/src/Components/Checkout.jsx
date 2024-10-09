@@ -3,6 +3,7 @@ import dataContext from "../../Context API/dataContext";
 import Address from "./Account/SavedAddress";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Spinner from "./Elements/Spinner";
+import { Link } from "react-router-dom";  
 import orderplaced from '../assets/images/orderplaced.gif'
 import staticImage from "../assets/images/staticimage.png"
 import {
@@ -142,11 +143,11 @@ const Checkout = ({ host }) => {
   
 
   useEffect(() => {
-    if (cart.data?.getAllCarts?.length > 0) {
+    if (cart?.data?.getAllCarts?.length > 0) {
       if (indexVar <= 0) {
         setindex(1);
       }
-    }else if(reference){
+    }else if(reference && oid && tid){
       setindex(4);
     }
     else {
@@ -420,7 +421,7 @@ const Checkout = ({ host }) => {
                 
                 
                 <p>You can use your order id to track your order.</p>
-                <button className="btn btn-success capitalize mtop-2 margin-bottom-2rem">Check your orders</button>
+                <Link to={'/my-account/orders'} className="btn btn-success capitalize mtop-2 margin-bottom-2rem">Check your orders</Link>
                 <button className="btn btn-primary capitalize margin-bottom-2rem" onClick={()=>navigate('/')}>Continue shopping</button>
             </div>
            

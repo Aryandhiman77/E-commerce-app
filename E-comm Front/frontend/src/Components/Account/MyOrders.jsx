@@ -16,6 +16,9 @@ const MyOrders = ({host}) => {
       <div className="search-result-container " style={{ userSelect: "none" }}>
         <div id="myTabContent" className="tab-content category-list">
             <h4 className="m-0"><b>My Orders</b></h4>
+            
+
+ 
             <hr />
             {/* <div className="filterbox mtop-2" style={{border:'1px solid',width:'25%',}}>
               <h4 className="text-center color-gray">Filters</h4>
